@@ -1,0 +1,15 @@
+node_modules
+.DS_Store
+npm-debug.log
+lerna-debug.log
+npm-debug.log.*
+lerna-debug.log.*
+lib
+.idea
+examples/element-ui
+examples/pages/en-US
+examples/pages/zh-CN
+fe.element/element-ui
+.npmrc
+coverage
+waiter.config.js

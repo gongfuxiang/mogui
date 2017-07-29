@@ -1,0 +1,13 @@
+{% include "../base/header.html" %}
+
+<h1>{{ hello }}</h1>
+
+
+<el-button @click="visible = true">按钮</el-button>
+<el-dialog v-model="visible" title="Hello world">
+    <p>欢迎使用 Element</p>
+</el-dialog>
+
+
+
+{% include "../base/footer.html" %}

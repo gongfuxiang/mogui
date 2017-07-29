@@ -1,0 +1,6 @@
+<script src="https://unpkg.com/vue@2.4.2"></script>
+<script src="https://unpkg.com/element-ui@1.4.0/lib/index.js"></script>
+<script src="{{ config.STATIC_URL }}{{ config.TEMPLATES_DEFAULT_VERSION }}/js/common.js"></script>
+<script src="{{ config.STATIC_URL }}{{ config.TEMPLATES_DEFAULT_VERSION }}/js{% if request.path == '/' %}/index/index{% else %}{{ request.path }}{% endif %}.js"></script>
+<body>
+</html>
