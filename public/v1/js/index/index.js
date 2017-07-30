@@ -12,11 +12,9 @@ var nav_left = new Vue({
 
     // 操作方法
     methods: {
-        handleOpen(key, keyPath) {
-            console.log('open', key, keyPath);
-        },
-        handleClose(key, keyPath) {
-            console.log('close', key, keyPath);
+        nav_left_event : function(url, event)
+        {
+            console.log(url, event);
         }
     }
 });
@@ -58,7 +56,7 @@ var content = new Vue({
                 width : (window.innerWidth-180)+'px',
                 height : (window.innerHeight-145)+'px'
             }
-console.log(window.innerWidth-180, window.innerHeight-145);
+
             // 更新左侧菜单高度
             nav_left.content_style = {height : (window.innerHeight-130)+'px'};
         }

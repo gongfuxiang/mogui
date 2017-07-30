@@ -13,5 +13,61 @@ from django.conf import settings
 # 配置信息
 def config(request) :
     return {
-        'config' : settings
+        'config' : settings,
+        'host' : get_host(request),
+        'nav_left' : nav_left(request),
     }
+
+# 获取host
+def get_host(request) :
+    if(request.is_secure() == True) :
+        http = 'https://'
+    else :
+        http = 'http://'
+    return http+request.get_host()+request.path
+
+# 左侧导航
+def nav_left(request) :
+    host = get_host(request)
+    return [
+        {
+            'name' : '项目管理',
+            'url' : host+'project/index',
+            'is_show' : True,
+            'index' : '1',
+            'items' : [
+                {
+                    'name' : '项目列表',
+                    'url' : host+'project/index',
+                    'is_show' : True,
+                    'index' : '1-1',
+                },
+                {
+                    'name' : '项目添加',
+                    'url' : host+'project/saveinfo',
+                    'is_show' : True,
+                    'index' : '1-2',
+                }
+            ]
+        },
+        {
+            'name' : '上线管理',
+            'url' : host+'release/index',
+            'is_show' : True,
+            'index' : '2',
+            'items' : [
+                {
+                    'name' : '上线列表',
+                    'url' : host+'release/index',
+                    'is_show' : True,
+                    'index' : '2-1',
+                },
+                {
+                    'name' : '创建上线',
+                    'url' : host+'release/saveinfo',
+                    'is_show' : True,
+                    'index' : '2-2',
+                }
+            ]
+        },
+    ]
