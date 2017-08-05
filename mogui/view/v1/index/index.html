@@ -2,7 +2,86 @@
 {% include "../base/nav_top.html" %}
 <div class="oh">
     {% include "../base/nav_left.html" %}
-    <iframe src="http://gong.gg/" frameborder="0" id="content" v-bind:style="content_style"></iframe>
+    <iframe v-bind:src="iframe_url" frameborder="0" id="content" v-bind:style="content_style"></iframe>
 </div>
 {% include "../base/nav_footer.html" %}
 {% include "../base/footer.html" %}
+
+<script type="text/javascript">
+/**
+ * 左侧菜单
+ */
+var nav_left = new Vue({
+    el: '#nav-left',
+
+    // 数据
+    data : {
+        // 左侧菜单样式
+        content_style : {}
+    },
+
+    // 操作方法
+    methods: {
+        /**
+         * [nav_left_event 坐车菜单操作方法]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-07-31T10:09:10+0800
+         * @param    {[string]}                 url   [url地址]
+         * @param    {[object]}                 event [事件]
+         */
+        nav_left_event : function(url, event)
+        {
+            content.iframe_url = url;
+        }
+    }
+});
+/**
+ * 内容区域
+ */
+var content = new Vue({
+    el: '#content',
+
+    // 数据
+    data : {
+        // iframe样式
+        content_style : {},
+
+        // iframeurl,默认欢迎页面
+        iframe_url : __host__+'welcome'
+    },
+
+    // 初始化区块
+    created : function()
+    {
+        // 注册浏览器窗口变化事件
+        window.addEventListener('resize', this.content_style_change);
+
+        // 初始化iframe窗口
+        this.content_style_change();
+    },
+
+    // 函数列表
+    methods : {
+        /**
+         * [content_style_change iframe样式操作函数]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-07-28T18:03:36+0800
+         */
+        content_style_change : function()
+        {
+            // iframe宽高样式初始化
+            this.content_style = {
+                width : (window.innerWidth-180)+'px',
+                height : (window.innerHeight-145)+'px'
+            }
+
+            // 更新左侧菜单高度
+            nav_left.content_style = {height : (window.innerHeight-130)+'px'};
+        }
+    }
+});
+</script>

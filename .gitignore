@@ -8,3 +8,4 @@ temp
 Logs
 logs
 *.lock
+*.pyc

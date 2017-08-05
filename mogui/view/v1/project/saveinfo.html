@@ -1,5 +1,136 @@
 {% include "../base/header.html" %}
 
-<h1>{{ hello }}</h1>
+<div id="app" v-loading="loading"
+    element-loading-text="加载中...">
+    <el-form :model="rule_form" :rules="rules" ref="rule_form" label-width="100px" label-position="top">
+        <el-form-item label="项目名称" prop="project_name">
+            <el-input v-model="rule_form.project_name" placeholder="起一个响亮的项目名称吧"></el-input>
+        </el-form-item>
+        <el-form-item label="项目git ssh地址" prop="git_ssh_address">
+            <el-input v-model="rule_form.git_ssh_address" placeholder="如：git@github.com:gongfuxiang/mogui.git"></el-input>
+        </el-form-item>
+        <el-form-item label="项目路径地址" prop="dir_address">
+            <el-input v-model="rule_form.dir_address" placeholder="如：/data/www/hello"></el-input>
+        </el-form-item>
+        <el-form-item label="是否集群模式">
+            <el-switch
+            disabled
+            v-model="rule_form.is_cluster"
+            on-color="#13ce66"
+            off-color="#ff4949"
+            on-value="1"
+            off-value="0"
+            on-text="是"
+            off-text="否">
+            </el-switch>
+        </el-form-item>
+        <el-form-item label="项目描述" prop="describe">
+            <el-input type="textarea" v-model="rule_form.describe" placeholder="说点什么吧！" :autosize="{minRows: 3, maxRows: 6}"></el-input>
+        </el-form-item>
+        <div class="form-submit">
+            <el-button type="primary" @click="form_submit('rule_form')">保存</el-button>
+            <el-button @click="reset_submit('rule_form')">重置</el-button>
+        </div>
+    </el-form>
+</div>
 
 {% include "../base/footer.html" %}
+<script type="text/javascript">
+new Vue({
+    el : '#app',
+    data : {
+        loading: false,
+        rule_form: {
+            csrfmiddlewaretoken: '{{ csrf_token }}' ,
+            project_id : '{{ project_id }}',
+            project_name: '{{ data.project_name }}',
+            git_ssh_address: '{{ data.git_ssh_address }}',
+            dir_address: '{{ data.dir_address }}',
+            is_cluster: 0,
+            describe: '{{ data.describe }}'
+        },
+        rules: {
+            project_name: [
+                { required: true, message: '请输入项目名称', trigger: 'blur' },
+                { min: 2, max: 60, message: '长度在 2 到 60 个字符', trigger: 'blur' }
+            ],
+            git_ssh_address: [
+                { required: true, message: '请输入项目git ssh地址', trigger: 'blur' },
+                { min: 3, max: 255, message: '长度在 3 到 255 个字符', trigger: 'blur' }
+            ],
+            dir_address: [
+                { required: true, message: '请输入项目路径地址', trigger: 'blur' },
+                { min: 3, max: 160, message: '长度在 3 到 160 个字符', trigger: 'blur' }
+            ],
+            describe: [
+                { required: false, message: '请填写项目描述', trigger: 'blur' },
+                { max: 255, message: '长度在 255 个字符以内', trigger: 'blur' }
+            ]
+        }
+    },
+
+    // 初始化
+    created : function()
+    {
+        this.rule_form.is_cluster = ('{{ data.is_cluster }}' == '') ? 0 : '{{ data.is_cluster }}';
+    },
+
+    // 操作方法
+    methods: {
+        /**
+         * 表单提交
+         */
+        form_submit(form_name)
+        {
+            this.$refs[form_name].validate((valid) =>
+            {
+                if(!valid)
+                {
+                    this.$message({
+                        showClose: true,
+                        message: '请输入正确的数据',
+                        type: 'warning'
+                    });
+                    return false;
+                    
+                }
+
+                this.loading = true;
+                this.$http.post(__host__+'project/save', this.rule_form, {emulateJSON: true}).then((response) =>
+                {
+                    this.loading = false;
+                    var type = (response.data.code == 0) ? 'success' : 'error';
+                    this.$message({
+                        showClose: true,
+                        message: response.data.msg,
+                        type: type
+                    });
+                    if(response.data.code == 0)
+                    {
+                        setTimeout(function()
+                        {
+                            window.location.href=__host__+'project/index';
+                        }, 1500);
+                    }
+                }, (response) =>
+                {
+                    this.$message({
+                        showClose: true,
+                        message: '网络错误',
+                        type: 'error'
+                    });
+                    this.loading = false;
+                });
+            });
+        },
+        
+        /**
+         * 表单重置
+         */
+        reset_submit(form_name)
+        {
+            this.$refs[form_name].resetFields();
+        }
+    }
+});
+</script>

@@ -3,3 +3,11 @@
  */
 * { font-size: 14px; margin: 0px; padding: 0px; border: 0px; }
 .oh { overflow: hidden; }
+.m-t-15 { margin-top: 15px; }
+
+/**
+ * 表单
+ */
+.el-form .el-form-item { margin-bottom: 0px; border-bottom: 1px dashed #eee; padding: 22px 5px; padding-right: 20%; }
+.form-submit { margin: 22px 5px; }
+.el-form-item:hover { background-color: #fafafa; }

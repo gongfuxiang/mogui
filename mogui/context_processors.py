@@ -24,7 +24,7 @@ def get_host(request) :
         http = 'https://'
     else :
         http = 'http://'
-    return http+request.get_host()+request.path
+    return http+request.get_host()+'/'
 
 # 左侧导航
 def nav_left(request) :

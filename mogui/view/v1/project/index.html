@@ -1,5 +1,82 @@
 {% include "../base/header.html" %}
 
-<h1>{{ hello }}</h1>
+<div id="app" v-loading="loading"
+    element-loading-text="加载中...">
+    <form class="search-form" action="" method="post">
+        <el-input placeholder="请输入搜索内容" v-model="search.keywords" class="keywords">
+            <el-button slot="append" icon="search" @click="get_project_list"></el-button>
+        </el-input>
+        <div class="submit m-t-15">
+            <a href="{{ host }}project/saveinfo">
+                <el-button type="info" size="small" icon="plus">新增</el-button>
+            </a>
+        </div>
+    </form>
+
+    <el-table :data="table_data" stripe class="content-table m-t-15">
+        <el-table-column prop="project_name" label="名称" width="180"></el-table-column>
+        <el-table-column prop="git_ssh_address" label="git ssh地址" width="180"></el-table-column>
+        <el-table-column prop="dir_address" label="项目路径位置"></el-table-column>
+        <el-table-column prop="is_cluster" label="是否集模式"></el-table-column>
+        <el-table-column prop="describe" label="描述"></el-table-column>
+        <el-table-column prop="create_time" label="创建时间"></el-table-column>
+    </el-table>
+</div>
 
 {% include "../base/footer.html" %}
+<script type="text/javascript">
+new Vue({
+    el : '#app',
+    data : {
+        table_data: [],
+        loading: false,
+        search : {
+            keywords : ''
+        }
+    },
+
+    // 初始化
+    created : function()
+    {
+        // 获取数据
+        this.get_project_list();
+    },
+
+    // 函数
+    methods : {
+        /**
+         * [get_project_list 获取数据列表]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-06T07:14:36+0800
+         */
+        get_project_list : function()
+        {
+            this.loading = true;
+            this.$http.post(__host__+'project/get_project_list', {csrfmiddlewaretoken:'{{ csrf_token }}', keywords:this.search.keywords}, {emulateJSON: true}).then((response) => 
+            {
+                if(response.data.code == 0)
+                {
+                    this.table_data = response.data.data;
+                } else {
+                    this.$message({
+                        showClose: true,
+                        message: response.data.msg,
+                        type: 'warning'
+                    });
+                }
+                this.loading = false;
+            }, (response) =>
+            {
+                this.$message({
+                    showClose: true,
+                    message: '网络错误',
+                    type: 'error'
+                });
+                this.loading = false;
+            });
+        }
+    }
+});
+</script>

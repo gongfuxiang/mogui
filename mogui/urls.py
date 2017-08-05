@@ -18,7 +18,7 @@ Including another URLconf
 
 from django.conf.urls import url
 from django.contrib import admin
-from controller import index,project,release
+from controller import index,project,release,welcome
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -26,11 +26,20 @@ urlpatterns = [
     # 首页
     url(r'^$', index.index),
 
+    # 欢迎页面
+    url(r'^welcome$', welcome.index),
+
     # 项目列表页面
     url(r'^project/index$', project.index),
 
+    # 获取项目列表
+    url(r'^project/get_project_list$', project.get_project_list),
+
     # 项目添加页面
     url(r'^project/saveinfo$', project.saveinfo),
+
+    # 项目保存
+    url(r'^project/save$', project.save),
 
     # 上线单列表页面
     url(r'^release/index$', release.index),
