@@ -41,12 +41,6 @@ def nav_left(request) :
                     'url' : host+'project/index',
                     'is_show' : True,
                     'index' : '1-1',
-                },
-                {
-                    'name' : '项目添加',
-                    'url' : host+'project/saveinfo',
-                    'is_show' : True,
-                    'index' : '1-2',
                 }
             ]
         },

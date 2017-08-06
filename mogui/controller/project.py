@@ -35,7 +35,7 @@ def saveinfo(request) :
     # 获取项目数据
     if project_id != 0 :
         data = Project.objects.filter(project_id=project_id).first()
-        if type(data) == 'object' :
+        if data != None :
             data.describe = data.describe.replace("\n", '\\n')
     else :
         data = {}
@@ -56,7 +56,14 @@ def saveinfo(request) :
 # @return   [json]      [josn]
 def get_project_list(request) :
     keywords = request.POST.get('keywords', '')
-    data = Project.objects.filter(project_name__contains=keywords).all().values('project_id', 'project_name', 'git_ssh_address', 'dir_address', 'is_cluster', 'describe', 'create_time')
+    data = Project.objects.filter(project_name__contains=keywords).all().values('project_id', 'project_name', 'git_ssh_address', 'dir_address', 'is_cluster', 'describe', 'create_time')[0:100]
+    for items in data :
+        #items['describe'] = items['describe'].replace("\n", '<br />')
+        if items['is_cluster'] == 0 :
+            items['is_cluster_text'] = u'否'
+        else :
+            items['is_cluster_text'] = u'是'
+
     result = {"code":0, "msg":"操作成功", "data":serializer(data)}
     return HttpResponse(json.dumps(result))
 

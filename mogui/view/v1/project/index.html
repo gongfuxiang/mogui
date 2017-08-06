@@ -13,13 +13,18 @@
         </div>
     </form>
 
-    <el-table :data="table_data" stripe class="content-table m-t-15">
-        <el-table-column prop="project_name" label="名称" width="180"></el-table-column>
-        <el-table-column prop="git_ssh_address" label="git ssh地址" width="180"></el-table-column>
-        <el-table-column prop="dir_address" label="项目路径位置"></el-table-column>
-        <el-table-column prop="is_cluster" label="是否集模式"></el-table-column>
+    <el-table :data="table_data" stripe border class="content-table m-t-15">
+        <el-table-column prop="project_name" label="名称" width="150" fixed="left" sortable></el-table-column>
+        <el-table-column prop="git_ssh_address" label="git ssh地址" width="150"></el-table-column>
+        <el-table-column prop="dir_address" label="项目路径位置" width="150"></el-table-column>
+        <el-table-column prop="is_cluster_text" label="集群模式" width="100"></el-table-column>
+        <el-table-column prop="create_time" label="创建时间" width="150" sortable></el-table-column>
         <el-table-column prop="describe" label="描述"></el-table-column>
-        <el-table-column prop="create_time" label="创建时间"></el-table-column>
+        <el-table-column label="操作" width="65" fixed="right">
+            <template scope="scope">
+                <el-button type="text" size="small" @click="handle_edit(scope.row.project_id)">编辑</el-button>
+            </template>
+        </el-table-column>
     </el-table>
 </div>
 
@@ -34,6 +39,9 @@ new Vue({
             keywords : ''
         }
     },
+
+    // 变量定界符修改，避免与django模板引擎冲突
+    delimiters:['{', '}'],
 
     // 初始化
     created : function()
@@ -76,6 +84,19 @@ new Vue({
                 });
                 this.loading = false;
             });
+        },
+
+        /**
+         * [handle_edit 处理编辑]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-06T17:12:12+0800
+         * @param    {[int]}                 id [项目id]
+         */
+        handle_edit : function(id)
+        {
+            window.location.href=__host__+'project/saveinfo?id='+id;
         }
     }
 });
