@@ -5,7 +5,7 @@ from django.views.decorators import csrf
 from mogui.model.models import Project
 from django.http import HttpResponse
 from dss.Serializer import serializer
-import json
+import json,time,datetime
 
 # 项目列表页面
 # @author   Devil
@@ -56,13 +56,23 @@ def saveinfo(request) :
 # @return   [json]      [josn]
 def get_project_list(request) :
     keywords = request.POST.get('keywords', '')
-    data = Project.objects.filter(project_name__contains=keywords).all().values('project_id', 'project_name', 'git_ssh_address', 'dir_address', 'is_cluster', 'describe', 'create_time')[0:100]
+    data = Project.objects.filter(project_name__contains=keywords).all().order_by('-project_id').values('project_id', 'project_name', 'git_ssh_address', 'dir_address', 'is_cluster', 'describe', 'create_time')
     for items in data :
+        # 描述
         #items['describe'] = items['describe'].replace("\n", '<br />')
+        
+        # 是否集群
         if items['is_cluster'] == 0 :
             items['is_cluster_text'] = u'否'
         else :
             items['is_cluster_text'] = u'是'
+
+        # 日期
+        #items['create_time_text'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(items['create_time'])))
+        # dateArray = datetime.utcfromtimestamp(int(items['create_time']))
+        # items['create_time_text'] = dateArray.strftime("%Y-%m-%d %H:%M:%S")
+        #x = time.localtime(1317091800.0)
+        #items['create_time_text'] = str(time.strftime('%Y-%m-%d %H:%M:%S',x))
 
     result = {"code":0, "msg":"操作成功", "data":serializer(data)}
     return HttpResponse(json.dumps(result))
@@ -76,8 +86,8 @@ def get_project_list(request) :
 # @param    [request]   [请求对象]
 # @return   [json]      [josn]
 def save(request) :
-    project_id = request.POST.get('project_id', 0)
-    if project_id == 0 :
+    project_id = request.POST.get('project_id', '0')
+    if project_id == '0' :
         # 数据添加
         Project(
             project_name=request.POST['project_name'],
@@ -98,4 +108,21 @@ def save(request) :
 
     # 返回数据
     result = {"code":0, "msg":"操作成功", "data":[]}
+    return HttpResponse(json.dumps(result))
+
+
+# 删除删除
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gongfuxiang.com/
+# @date     2017-08-04
+# @param    [request]   [请求对象]
+# @return   [json]      [josn]
+def project_delete(request) :
+    project_id = request.POST.get('project_id', '0')
+    if project_id != '0' :
+        Project.objects.filter(project_id=project_id).delete()
+
+    # 返回数据
+    result = {"code":0, "msg":"删除成功", "data":[]}
     return HttpResponse(json.dumps(result))

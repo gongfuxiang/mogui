@@ -1,5 +1,76 @@
 {% include "../base/header.html" %}
 
-<h1>{{ hello }}</h1>
+<div id="app" v-loading="loading" element-loading-text="加载中...">
+    <el-form :model="rule_form" :rules="rules" ref="rule_form" label-width="100px" label-position="top">
+        <el-form-item label="标题" prop="branch">
+            <el-input v-model="rule_form.project_name" placeholder="上线单标题"></el-input>
+        </el-form-item>
+        
+        <el-form-item label="项目" prop="project_name">
+            <el-select v-model="rule_form.project_id" filterable placeholder="请选择项目">
+                {% for item in data %}
+                    <el-option  label="{{ item.project_name }}" value="{{ item.project_id }}"></el-option>
+                {% endfor %}
+            </el-select>
+        </el-form-item>
+
+        <el-form-item label="分支">
+            <el-select v-model="rule_form.project_name" placeholder="请选择活动区域">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+            <el-button :plain="true" type="primary" :loading="false" @click="branch_refresh($event)" class="branch-submit">刷新</el-button>
+        </el-form-item>
+
+        <el-form-item label="版本">
+            <el-select v-model="rule_form.project_id" placeholder="活动区域">
+                <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+        </el-form-item>
+    </el-form>
+</div>
 
 {% include "../base/footer.html" %}
+<script type="text/javascript">
+new Vue({
+    el : '#app',
+    data : {
+        loading: false,
+        loading_submit: false,
+        rule_form: {
+            csrfmiddlewaretoken: '{{ csrf_token }}' ,
+            project_id : '{{ project_id }}',
+            project_name: '{{ data.project_name }}',
+            git_ssh_address: '{{ data.git_ssh_address }}',
+            dir_address: '{{ data.dir_address }}',
+            is_cluster: 0,
+            describe: '{{ data.describe }}'
+        },
+        rules: {
+            project_id: [
+                { required: true, message: '请输入项目名称', trigger: 'blur' },
+                { min: 2, max: 60, message: '长度在 2 到 60 个字符', trigger: 'blur' }
+            ],
+            project_name: [
+                { required: true, message: '请填写标题', trigger: 'blur' },
+                { min: 3, max: 30, message: '长度在 3 到 30 个字符', trigger: 'blur' }
+            ],
+            dir_address: [
+                { required: true, message: '请输入项目路径地址', trigger: 'blur' },
+                { min: 3, max: 160, message: '长度在 3 到 160 个字符', trigger: 'blur' }
+            ],
+            describe: [
+                { required: false, message: '请填写项目描述', trigger: 'blur' },
+                { max: 255, message: '长度在 255 个字符以内', trigger: 'blur' }
+            ]
+        },
+
+        methods : {
+            branch_refresh(event)
+            {
+                console.log('hello');
+            }
+        }
+    }
+});
+</script>

@@ -1,7 +1,6 @@
 {% include "../base/header.html" %}
 
-<div id="app" v-loading="loading"
-    element-loading-text="加载中...">
+<div id="app" v-loading="loading" element-loading-text="加载中...">
     <form class="search-form" action="" method="post">
         <el-input placeholder="请输入搜索内容" v-model="search.keywords" class="keywords">
             <el-button slot="append" icon="search" @click="get_project_list"></el-button>
@@ -20,9 +19,14 @@
         <el-table-column prop="is_cluster_text" label="集群模式" width="100"></el-table-column>
         <el-table-column prop="create_time" label="创建时间" width="150" sortable></el-table-column>
         <el-table-column prop="describe" label="描述"></el-table-column>
-        <el-table-column label="操作" width="65" fixed="right">
+        <el-table-column label="操作" width="110" fixed="right">
             <template scope="scope">
-                <el-button type="text" size="small" @click="handle_edit(scope.row.project_id)">编辑</el-button>
+                <el-tooltip class="item" effect="dark" content="编辑" placement="top">
+                    <el-button type="info" :plain="true" size="mini" icon="edit" @click="handle_edit(scope.row.project_id)"></el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="删除" placement="top">
+                    <el-button type="danger" :plain="true" size="mini" icon="delete" @click="handle_delete(scope.$index, scope.row.project_id)"></el-button>
+                </el-tooltip>
             </template>
         </el-table-column>
     </el-table>
@@ -97,6 +101,55 @@ new Vue({
         handle_edit : function(id)
         {
             window.location.href=__host__+'project/saveinfo?id='+id;
+        },
+
+        /**
+         * [handle_delete 项目删除]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-07T19:45:28+0800
+         * @param    {[int]}           index      [列表索引]
+         * @param    {[int]}           project_id [项目id]
+         */
+        handle_delete : function(index, project_id)
+        {
+            this.$confirm('此操作将永久删除该项目, 是否继续?', '提示',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.loading = true;
+                this.$http.post(__host__+'project/project_delete', {csrfmiddlewaretoken:'{{ csrf_token }}', project_id:project_id}, {emulateJSON: true}).then((response) => 
+                {
+                    if(response.data.code == 0)
+                    {
+                        this.table_data.splice(index, 1);
+
+                        this.$message({
+                            showClose: true,
+                            message: response.data.msg,
+                            type: 'success'
+                        });
+                    } else {
+                        this.$message({
+                            showClose: true,
+                            message: response.data.msg,
+                            type: 'warning'
+                        });
+                    }
+                    this.loading = false;
+                }, (response) =>
+                {
+                    this.$message({
+                        showClose: true,
+                        message: error_msg,
+                        type: 'error'
+                    });
+                    this.loading = false;
+                });
+            }).catch(() => {});
         }
     }
 });

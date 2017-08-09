@@ -9,7 +9,11 @@
 # ============================================================
 
 from django.shortcuts import render
-from mogui.model.models import Config
+from django.views.decorators import csrf
+from mogui.model.models import Project
+from django.http import HttpResponse
+from dss.Serializer import serializer
+import json
 
 def index(request) :
     context          = {}
@@ -17,7 +21,8 @@ def index(request) :
     return render(request, 'release/index.html', context)
 
 def saveinfo(request) :
-    context          = {}
-    context['hello'] = 'release saveinfo'
-    #context['v'] = settings.TEMPLATES_DEFAULT_VERSION
+    data = Project.objects.all().order_by('-project_id').values('project_id', 'project_name')
+    context = {
+        'data' : data
+    }
     return render(request, 'release/saveinfo.html', context)

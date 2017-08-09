@@ -35,6 +35,9 @@ urlpatterns = [
     # 获取项目列表
     url(r'^project/get_project_list$', project.get_project_list),
 
+    # 项目删除
+    url(r'^project/project_delete$', project.project_delete),
+
     # 项目添加页面
     url(r'^project/saveinfo$', project.saveinfo),
 

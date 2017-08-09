@@ -1,7 +1,6 @@
 {% include "../base/header.html" %}
 
-<div id="app" v-loading="loading"
-    element-loading-text="加载中...">
+<div id="app" v-loading="loading" element-loading-text="加载中...">
     <el-form :model="rule_form" :rules="rules" ref="rule_form" label-width="100px" label-position="top">
         <el-form-item label="项目名称" prop="project_name">
             <el-input v-model="rule_form.project_name" placeholder="起一个响亮的项目名称吧"></el-input>
@@ -28,7 +27,7 @@
             <el-input type="textarea" v-model="rule_form.describe" placeholder="说点什么吧！" :autosize="{minRows: 3, maxRows: 6}"></el-input>
         </el-form-item>
         <div class="form-submit">
-            <el-button type="primary" @click="form_submit('rule_form')">保存</el-button>
+            <el-button type="primary" @click="form_submit('rule_form')" :loading="loading_submit">保存</el-button>
             <el-button @click="reset_submit('rule_form')">重置</el-button>
         </div>
     </el-form>
@@ -40,6 +39,7 @@ new Vue({
     el : '#app',
     data : {
         loading: false,
+        loading_submit: false,
         rule_form: {
             csrfmiddlewaretoken: '{{ csrf_token }}' ,
             project_id : '{{ project_id }}',
@@ -96,6 +96,7 @@ new Vue({
                 }
 
                 this.loading = true;
+                this.loading_submit = true;
                 this.$http.post(__host__+'project/save', this.rule_form, {emulateJSON: true}).then((response) =>
                 {
                     this.loading = false;
@@ -111,15 +112,18 @@ new Vue({
                         {
                             window.location.href=__host__+'project/index';
                         }, 1500);
+                    } else {
+                        this.loading_submit = false;
                     }
                 }, (response) =>
                 {
                     this.$message({
                         showClose: true,
-                        message: '网络错误',
+                        message: error_msg,
                         type: 'error'
                     });
                     this.loading = false;
+                    this.loading_submit = false;
                 });
             });
         },
