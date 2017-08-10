@@ -2,4 +2,4 @@
 .project-list .el-radio-button { margin:10px 30px; }
 .el-radio-button__inner { border: 1px solid #bfcbd9; }
 .el-select { width: 100% }
-.branch-submit { float: right; margin: -36px -85px 0 0; }
+.refresh-submit { float: left; margin: -30px 0 0 35px; }

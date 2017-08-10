@@ -5,7 +5,7 @@
         <el-form-item label="标题" prop="branch">
             <el-input v-model="rule_form.project_name" placeholder="上线单标题"></el-input>
         </el-form-item>
-        
+
         <el-form-item label="项目" prop="project_name">
             <el-select v-model="rule_form.project_id" filterable placeholder="请选择项目">
                 {% for item in data %}
@@ -15,18 +15,24 @@
         </el-form-item>
 
         <el-form-item label="分支">
+            <el-button :plain="true" type="primary" :loading="false" size="mini" @click="branch_refresh" class="refresh-submit">刷新</el-button>
             <el-select v-model="rule_form.project_name" placeholder="请选择活动区域">
                 <el-option label="区域一" value="shanghai"></el-option>
                 <el-option label="区域二" value="beijing"></el-option>
             </el-select>
-            <el-button :plain="true" type="primary" :loading="false" @click="branch_refresh($event)" class="branch-submit">刷新</el-button>
         </el-form-item>
 
         <el-form-item label="版本">
+            <el-button :plain="true" type="primary" :loading="false" size="mini" @click="version_refresh" class="refresh-submit">刷新</el-button>
             <el-select v-model="rule_form.project_id" placeholder="活动区域">
                 <el-option label="区域二" value="beijing"></el-option>
             </el-select>
         </el-form-item>
+
+        <div class="form-submit">
+            <el-button type="primary" @click="form_submit('rule_form')" :loading="loading_submit">保存</el-button>
+            <el-button @click="reset_submit('rule_form')">重置</el-button>
+        </div>
     </el-form>
 </div>
 
@@ -63,13 +69,104 @@ new Vue({
                 { required: false, message: '请填写项目描述', trigger: 'blur' },
                 { max: 255, message: '长度在 255 个字符以内', trigger: 'blur' }
             ]
+        }
+    },
+
+    // 操作方法
+    methods : {
+        /**
+         * [form_submit 表单提交]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-10T09:44:52+0800
+         * @param    {[string]}                 form_name [form名称]
+         */
+        form_submit : function(form_name)
+        {
+            this.$refs[form_name].validate((valid) =>
+            {
+                if(!valid)
+                {
+                    this.$message({
+                        showClose: true,
+                        message: '请输入正确的数据',
+                        type: 'warning'
+                    });
+                    return false;
+                    
+                }
+
+                this.loading = true;
+                this.loading_submit = true;
+                this.$http.post(__host__+'project/save', this.rule_form, {emulateJSON: true}).then((response) =>
+                {
+                    this.loading = false;
+                    var type = (response.data.code == 0) ? 'success' : 'error';
+                    this.$message({
+                        showClose: true,
+                        message: response.data.msg,
+                        type: type
+                    });
+                    if(response.data.code == 0)
+                    {
+                        setTimeout(function()
+                        {
+                            window.location.href=__host__+'project/index';
+                        }, 1500);
+                    } else {
+                        this.loading_submit = false;
+                    }
+                }, (response) =>
+                {
+                    this.$message({
+                        showClose: true,
+                        message: error_msg,
+                        type: 'error'
+                    });
+                    this.loading = false;
+                    this.loading_submit = false;
+                });
+            });
+        },
+        
+        /**
+         * [reset_submit 表单重置]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-10T09:44:52+0800
+         * @param    {[string]}                 form_name [form名称]
+         */
+        reset_submit : function(form_name)
+        {
+            this.$refs[form_name].resetFields();
         },
 
-        methods : {
-            branch_refresh(event)
-            {
-                console.log('hello');
-            }
+        /**
+         * [branch_refresh 分支刷新]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-10T09:45:41+0800
+         * @param    {[object]}                 event [默认事件]
+         */
+        branch_refresh : function(event)
+        {
+            console.log('branch', event);
+        },
+
+        /**
+         * [version_refresh 版本刷新]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-10T09:45:41+0800
+         * @param    {[object]}                 event [默认事件]
+         */
+        version_refresh : function(event)
+        {
+            console.log('version', event);
         }
     }
 });

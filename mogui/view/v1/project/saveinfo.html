@@ -78,9 +78,14 @@ new Vue({
     // 操作方法
     methods: {
         /**
-         * 表单提交
+         * [form_submit 表单提交]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-10T09:44:52+0800
+         * @param    {[string]}                 form_name [form名称]
          */
-        form_submit(form_name)
+        form_submit : function(form_name)
         {
             this.$refs[form_name].validate((valid) =>
             {
@@ -129,9 +134,14 @@ new Vue({
         },
         
         /**
-         * 表单重置
+         * [reset_submit 表单重置]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-10T09:44:52+0800
+         * @param    {[string]}                 form_name [form名称]
          */
-        reset_submit(form_name)
+        reset_submit : function(form_name)
         {
             this.$refs[form_name].resetFields();
         }
