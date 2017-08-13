@@ -2,29 +2,28 @@
 
 <div id="app" v-loading="loading" element-loading-text="加载中...">
     <el-form :model="rule_form" :rules="rules" ref="rule_form" label-width="100px" label-position="top">
-        <el-form-item label="标题" prop="branch">
-            <el-input v-model="rule_form.project_name" placeholder="上线单标题"></el-input>
+        <el-form-item label="标题" prop="title">
+            <el-input v-model="rule_form.title" placeholder="上线单标题"></el-input>
         </el-form-item>
 
-        <el-form-item label="项目" prop="project_name">
-            <el-select v-model="rule_form.project_id" filterable placeholder="请选择项目">
-                {% for item in data %}
+        <el-form-item label="项目" prop="project_id">
+            <el-select v-model="rule_form.project_id" filterable placeholder="请选择项目" @change="project_select">
+                {% for item in project_list %}
                     <el-option  label="{{ item.project_name }}" value="{{ item.project_id }}"></el-option>
                 {% endfor %}
             </el-select>
         </el-form-item>
 
-        <el-form-item label="分支">
+        <el-form-item label="分支" prop="branch">
             <el-button :plain="true" type="primary" :loading="false" size="mini" @click="branch_refresh" class="refresh-submit">刷新</el-button>
-            <el-select v-model="rule_form.project_name" placeholder="请选择活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
+            <el-select v-model="rule_form.branch" placeholder="请选择活动区域" @change="version_refresh">
+                <el-option v-for="item in branch_list" :key="item.value" :label="item.label" :value="item.value"> </el-option>
             </el-select>
         </el-form-item>
 
-        <el-form-item label="版本">
+        <el-form-item label="版本" prop="version">
             <el-button :plain="true" type="primary" :loading="false" size="mini" @click="version_refresh" class="refresh-submit">刷新</el-button>
-            <el-select v-model="rule_form.project_id" placeholder="活动区域">
+            <el-select v-model="rule_form.version" placeholder="活动区域">
                 <el-option label="区域二" value="beijing"></el-option>
             </el-select>
         </el-form-item>
@@ -45,31 +44,27 @@ new Vue({
         loading_submit: false,
         rule_form: {
             csrfmiddlewaretoken: '{{ csrf_token }}' ,
+            title: '{{ data.title }}',
             project_id : '{{ project_id }}',
-            project_name: '{{ data.project_name }}',
-            git_ssh_address: '{{ data.git_ssh_address }}',
-            dir_address: '{{ data.dir_address }}',
-            is_cluster: 0,
-            describe: '{{ data.describe }}'
+            branch: '{{ data.branch }}',
+            version: '{{ data.version }}'
         },
         rules: {
-            project_id: [
-                { required: true, message: '请输入项目名称', trigger: 'blur' },
-                { min: 2, max: 60, message: '长度在 2 到 60 个字符', trigger: 'blur' }
-            ],
-            project_name: [
+            title: [
                 { required: true, message: '请填写标题', trigger: 'blur' },
-                { min: 3, max: 30, message: '长度在 3 到 30 个字符', trigger: 'blur' }
+                { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' }
             ],
-            dir_address: [
-                { required: true, message: '请输入项目路径地址', trigger: 'blur' },
-                { min: 3, max: 160, message: '长度在 3 到 160 个字符', trigger: 'blur' }
+            project_id: [
+                { required: true, message: '请选择项目', trigger: 'change' }
             ],
-            describe: [
-                { required: false, message: '请填写项目描述', trigger: 'blur' },
-                { max: 255, message: '长度在 255 个字符以内', trigger: 'blur' }
+            branch: [
+                { required: true, message: '请选择分支', trigger: 'change' }
+            ],
+            version: [
+                { required: true, message: '请选择版本', trigger: 'change' }
             ]
-        }
+        },
+        branch_list : []
     },
 
     // 操作方法
@@ -144,7 +139,41 @@ new Vue({
         },
 
         /**
-         * [branch_refresh 分支刷新]
+         * [project_select 项目选择]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-10T09:45:41+0800
+         * @param    {[object]}                 event [默认事件]
+         */
+        project_select : function(event)
+        {
+            this.$http.post(__host__+'release/get_branch_list', this.rule_form, {emulateJSON: true}).then((response) =>
+            {
+                if(response.data.code == 0)
+                {
+                    this.branch_list = response.data.data;
+                } else {
+                    this.$message({
+                        showClose: true,
+                        message: response.data.msg,
+                        type: 'error'
+                    });
+                }
+            }, (response) =>
+            {
+                this.$message({
+                    showClose: true,
+                    message: error_msg,
+                    type: 'error'
+                });
+                this.loading = false;
+                this.loading_submit = false;
+            });
+        },
+
+        /**
+         * [branch_refresh 分支选择/刷新]
          * @author   Devil
          * @blog     http://gong.gg/
          * @version  0.0.1
@@ -153,11 +182,11 @@ new Vue({
          */
         branch_refresh : function(event)
         {
-            console.log('branch', event);
+            console.log('branch', this.rule_form.project_id);
         },
 
         /**
-         * [version_refresh 版本刷新]
+         * [version_refresh 版本选择/刷新]
          * @author   Devil
          * @blog     http://gong.gg/
          * @version  0.0.1
@@ -166,7 +195,7 @@ new Vue({
          */
         version_refresh : function(event)
         {
-            console.log('version', event);
+            console.log('version', this.rule_form.project_id, this.rule_form.branch);
         }
     }
 });

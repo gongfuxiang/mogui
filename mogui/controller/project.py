@@ -5,7 +5,8 @@ from django.views.decorators import csrf
 from mogui.model.models import Project
 from django.http import HttpResponse
 from dss.Serializer import serializer
-import json,time,datetime
+import json,time,datetime,commands,os,shutil
+from mogui.common import function
 
 # 项目列表页面
 # @author   Devil
@@ -86,8 +87,18 @@ def get_project_list(request) :
 # @param    [request]   [请求对象]
 # @return   [json]      [josn]
 def save(request) :
+    # 项目id
     project_id = request.POST.get('project_id', '0')
+
+    # 获取项目名称
+    git_dir_address = function.get_git_address(request.POST['dir_address'], request.POST['git_ssh_address'])
+
+    # 等于0则添加
     if project_id == '0' :
+        # 添加情况下 项目存在则删除
+        if os.path.exists(git_dir_address) == True :
+            shutil.rmtree(git_dir_address)
+
         # 数据添加
         Project(
             project_name=request.POST['project_name'],
@@ -105,6 +116,14 @@ def save(request) :
             is_cluster=request.POST['is_cluster'],
             describe=request.POST['describe']
         )
+
+    # 目录不存在则创建
+    if os.path.exists(request.POST['dir_address']) == False :
+        os.mkdir(request.POST['dir_address'])
+
+    # 创建分支
+    if os.path.exists(git_dir_address) == False :
+        (status, output) = commands.getstatusoutput('cd '+request.POST['dir_address']+';git clone '+request.POST['git_ssh_address']);
 
     # 返回数据
     result = {"code":0, "msg":"操作成功", "data":[]}

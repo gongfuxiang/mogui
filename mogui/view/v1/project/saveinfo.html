@@ -1,6 +1,6 @@
 {% include "../base/header.html" %}
 
-<div id="app" v-loading="loading" element-loading-text="加载中...">
+<div id="app" v-loading="loading" element-loading-text="处理中...">
     <el-form :model="rule_form" :rules="rules" ref="rule_form" label-width="100px" label-position="top">
         <el-form-item label="项目名称" prop="project_name">
             <el-input v-model="rule_form.project_name" placeholder="起一个响亮的项目名称吧"></el-input>
