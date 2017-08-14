@@ -7,7 +7,7 @@
         </el-form-item>
 
         <el-form-item label="项目" prop="project_id">
-            <el-select v-model="rule_form.project_id" filterable placeholder="请选择项目" @change="project_select">
+            <el-select v-model="rule_form.project_id" filterable placeholder="请选择项目" @change="branch_refresh">
                 {% for item in project_list %}
                     <el-option  label="{{ item.project_name }}" value="{{ item.project_id }}"></el-option>
                 {% endfor %}
@@ -16,14 +16,14 @@
 
         <el-form-item label="分支" prop="branch">
             <el-button :plain="true" type="primary" :loading="false" size="mini" @click="branch_refresh" class="refresh-submit">刷新</el-button>
-            <el-select v-model="rule_form.branch" placeholder="请选择活动区域" @change="version_refresh">
+            <el-select v-model="rule_form.branch" placeholder="请选择分支" @change="version_refresh">
                 <el-option v-for="item in branch_list" :key="item.value" :label="item.label" :value="item.value"> </el-option>
             </el-select>
         </el-form-item>
 
         <el-form-item label="版本" prop="version">
             <el-button :plain="true" type="primary" :loading="false" size="mini" @click="version_refresh" class="refresh-submit">刷新</el-button>
-            <el-select v-model="rule_form.version" placeholder="活动区域">
+            <el-select v-model="rule_form.version" placeholder="请选择版本">
                 <el-option label="区域二" value="beijing"></el-option>
             </el-select>
         </el-form-item>
@@ -139,15 +139,27 @@ new Vue({
         },
 
         /**
-         * [project_select 项目选择]
+         * [branch_refresh 项目选择/版本刷新]
          * @author   Devil
          * @blog     http://gong.gg/
          * @version  0.0.1
          * @datetime 2017-08-10T09:45:41+0800
          * @param    {[object]}                 event [默认事件]
          */
-        project_select : function(event)
+        branch_refresh : function(event)
         {
+            // 项目id校验
+            if(this.rule_form.project_id.length == 0)
+            {
+                this.$message({
+                    showClose: true,
+                    message: '请选择项目',
+                    type: 'warning'
+                });
+                return false;
+            }
+
+            // http请求数据
             this.$http.post(__host__+'release/get_branch_list', this.rule_form, {emulateJSON: true}).then((response) =>
             {
                 if(response.data.code == 0)
@@ -173,20 +185,7 @@ new Vue({
         },
 
         /**
-         * [branch_refresh 分支选择/刷新]
-         * @author   Devil
-         * @blog     http://gong.gg/
-         * @version  0.0.1
-         * @datetime 2017-08-10T09:45:41+0800
-         * @param    {[object]}                 event [默认事件]
-         */
-        branch_refresh : function(event)
-        {
-            console.log('branch', this.rule_form.project_id);
-        },
-
-        /**
-         * [version_refresh 版本选择/刷新]
+         * [version_refresh 分支选择/版本刷新]
          * @author   Devil
          * @blog     http://gong.gg/
          * @version  0.0.1
@@ -195,6 +194,28 @@ new Vue({
          */
         version_refresh : function(event)
         {
+            // 项目id校验
+            if(this.rule_form.project_id.length == 0)
+            {
+                this.$message({
+                    showClose: true,
+                    message: '请选择项目',
+                    type: 'warning'
+                });
+                return false;
+            }
+
+            // 项目分支校验
+            if(this.rule_form.branch.length == 0)
+            {
+                this.$message({
+                    showClose: true,
+                    message: '请选择分支',
+                    type: 'warning'
+                });
+                return false;
+            }
+
             console.log('version', this.rule_form.project_id, this.rule_form.branch);
         }
     }
