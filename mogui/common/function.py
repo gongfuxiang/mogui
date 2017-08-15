@@ -8,6 +8,9 @@
 # datetime  2017-08-13
 # ============================================================
 
+from django.http import HttpResponse
+import json
+
 # 获取项目名称
 # @author   Devil
 # @version  0.0.1
@@ -41,7 +44,7 @@ def get_git_address(dir_name, url) :
     return git_dir
 
 
-# 获取版本列表
+# 获取分支列表
 # @author   Devil
 # @version  0.0.1
 # @blog     http://gongfuxiang.com/
@@ -58,3 +61,52 @@ def get_branch_list(string) :
                 branch = temp_branch[temp_index][temp_location+1:]
                 branch_list.append({'value':branch, 'label':branch})
     return branch_list
+
+
+# 获取版本列表
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gongfuxiang.com/
+# @date     2017-08-04
+# @param    [string]   [版本字符串]
+# @return   [list]     [版本列表]
+def get_version_list(string) :
+    version_list = []
+    temp_version = string.split('\n')
+    if len(temp_version) > 0 :
+        for items in temp_version :
+            version_list.append({'value':items[0:7], 'label':items})
+    return version_list
+
+
+# 移除list中所有空值项
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gongfuxiang.com/
+# @date     2017-08-04
+# @param    [string]   [字符串]
+# @return   [list]     [版本列表]
+def remove_list_empty(l) :
+    return filter(not_empty, l)
+
+
+# 移除字符串前后空字符串
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gongfuxiang.com/
+# @date     2017-08-04
+# @param    [string]   [字符串]
+# @return   [string]   [处理后的字符串]
+def not_empty(string) :
+    return string and string.strip()
+
+
+# ajax请求返回退出
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gongfuxiang.com/
+# @date     2017-08-04
+# @param    [string]   [字符串]
+# @return   [string]   [处理后的字符串]
+def ajax_return_exit(msg, code=0, data=[]) :
+    return HttpResponse(json.dumps({"code":code, "msg":msg, "data":data}))

@@ -15,16 +15,16 @@
         </el-form-item>
 
         <el-form-item label="分支" prop="branch">
-            <el-button :plain="true" type="primary" :loading="false" size="mini" @click="branch_refresh" class="refresh-submit">刷新</el-button>
+            <el-button :plain="true" type="primary" size="mini" @click="branch_refresh" class="refresh-submit">刷新</el-button>
             <el-select v-model="rule_form.branch" placeholder="请选择分支" @change="version_refresh">
                 <el-option v-for="item in branch_list" :key="item.value" :label="item.label" :value="item.value"> </el-option>
             </el-select>
         </el-form-item>
 
         <el-form-item label="版本" prop="version">
-            <el-button :plain="true" type="primary" :loading="false" size="mini" @click="version_refresh" class="refresh-submit">刷新</el-button>
+            <el-button :plain="true" type="primary" size="mini" @click="version_refresh" class="refresh-submit">刷新</el-button>
             <el-select v-model="rule_form.version" placeholder="请选择版本">
-                <el-option label="区域二" value="beijing"></el-option>
+                <el-option v-for="item in version_list" :key="item.value" :label="item.label" :value="item.value"> </el-option>
             </el-select>
         </el-form-item>
 
@@ -64,7 +64,8 @@ new Vue({
                 { required: true, message: '请选择版本', trigger: 'change' }
             ]
         },
-        branch_list : []
+        branch_list : [],
+        version_list : []
     },
 
     // 操作方法
@@ -94,7 +95,7 @@ new Vue({
 
                 this.loading = true;
                 this.loading_submit = true;
-                this.$http.post(__host__+'project/save', this.rule_form, {emulateJSON: true}).then((response) =>
+                this.$http.post(__host__+'release/save', this.rule_form, {emulateJSON: true}).then((response) =>
                 {
                     this.loading = false;
                     var type = (response.data.code == 0) ? 'success' : 'error';
@@ -160,6 +161,7 @@ new Vue({
             }
 
             // http请求数据
+            this.loading = true;
             this.$http.post(__host__+'release/get_branch_list', this.rule_form, {emulateJSON: true}).then((response) =>
             {
                 if(response.data.code == 0)
@@ -172,6 +174,7 @@ new Vue({
                         type: 'error'
                     });
                 }
+                this.loading = false;
             }, (response) =>
             {
                 this.$message({
@@ -180,7 +183,6 @@ new Vue({
                     type: 'error'
                 });
                 this.loading = false;
-                this.loading_submit = false;
             });
         },
 
@@ -215,6 +217,31 @@ new Vue({
                 });
                 return false;
             }
+
+            // http请求数据
+            this.loading = true;
+            this.$http.post(__host__+'release/get_version_list', this.rule_form, {emulateJSON: true}).then((response) =>
+            {
+                if(response.data.code == 0)
+                {
+                    this.version_list = response.data.data;
+                } else {
+                    this.$message({
+                        showClose: true,
+                        message: response.data.msg,
+                        type: 'error'
+                    });
+                }
+                this.loading = false;
+            }, (response) =>
+            {
+                this.$message({
+                    showClose: true,
+                    message: error_msg,
+                    type: 'error'
+                });
+                this.loading = false;
+            });
 
             console.log('version', this.rule_form.project_id, this.rule_form.branch);
         }
