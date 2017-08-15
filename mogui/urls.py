@@ -50,8 +50,11 @@ urlpatterns = [
     # 上线单添加页面
     url(r'^release/saveinfo$', release.saveinfo),
 
-    # 获取版本列表
+    # 获取分支列表
     url(r'^release/get_branch_list$', release.get_branch_list),
+
+    # 获取版本列表
+    url(r'^release/get_version_list$', release.get_version_list),
 
     # 数据库数据添加
     url(r'^db$', index.db),
