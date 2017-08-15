@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.views.decorators import csrf
 from mogui.model.models import Project
 from dss.Serializer import serializer
-import commands
+import commands,os
 from mogui.common import function
 
 def index(request) :
@@ -49,6 +49,8 @@ def get_branch_list(request) :
         if data != None :
             # 获取项目名称
             git_dir_address = function.get_git_address(data.dir_address, data.git_ssh_address)
+            if os.path.exists(git_dir_address) == False:
+                return function.ajax_return_exit('项目路径地址不存在', -1)
 
             # 获取版本列表
             (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git branch -a')
@@ -84,6 +86,8 @@ def get_version_list(request) :
     if data != None :
         # 获取项目名称
         git_dir_address = function.get_git_address(data.dir_address, data.git_ssh_address)
+        if os.path.exists(git_dir_address) == False:
+                return function.ajax_return_exit('项目路径地址不存在', -1)
 
         # 切换分支
         (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git checkout .;git fetch origin '+branch+';git checkout '+branch)

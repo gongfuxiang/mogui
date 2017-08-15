@@ -7,7 +7,7 @@
         </el-form-item>
 
         <el-form-item label="项目" prop="project_id">
-            <el-select v-model="rule_form.project_id" filterable placeholder="请选择项目" @change="branch_refresh">
+            <el-select v-model="rule_form.project_id" filterable placeholder="请选择项目" @change="branch_change">
                 {% for item in project_list %}
                     <el-option  label="{{ item.project_name }}" value="{{ item.project_id }}"></el-option>
                 {% endfor %}
@@ -16,14 +16,14 @@
 
         <el-form-item label="分支" prop="branch">
             <el-button :plain="true" type="primary" size="mini" @click="branch_refresh" class="refresh-submit">刷新</el-button>
-            <el-select v-model="rule_form.branch" placeholder="请选择分支" @change="version_refresh">
+            <el-select v-model="rule_form.branch" filterable placeholder="请选择分支" @change="version_change">
                 <el-option v-for="item in branch_list" :key="item.value" :label="item.label" :value="item.value"> </el-option>
             </el-select>
         </el-form-item>
 
         <el-form-item label="版本" prop="version">
             <el-button :plain="true" type="primary" size="mini" @click="version_refresh" class="refresh-submit">刷新</el-button>
-            <el-select v-model="rule_form.version" placeholder="请选择版本">
+            <el-select v-model="rule_form.version" filterable placeholder="请选择版本">
                 <el-option v-for="item in version_list" :key="item.value" :label="item.label" :value="item.value"> </el-option>
             </el-select>
         </el-form-item>
@@ -140,7 +140,24 @@ new Vue({
         },
 
         /**
-         * [branch_refresh 项目选择/版本刷新]
+         * [branch_change 项目选择]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-10T09:44:52+0800
+         * @param    {[object]}                 event [默认事件]
+         */
+        branch_change : function(event)
+        {
+            // 项目id校验
+            if(this.rule_form.project_id.length > 0)
+            {
+                this.branch_refresh(event);
+            }
+        },
+
+        /**
+         * [branch_refresh 分支刷新-获取分支列表]
          * @author   Devil
          * @blog     http://gong.gg/
          * @version  0.0.1
@@ -160,6 +177,18 @@ new Vue({
                 return false;
             }
 
+            // 数据初始
+            this.branch_list = [];
+            this.version_list = [];
+            if(this.rule_form.branch.length > 0)
+            {
+                this.rule_form.branch = '';
+            }
+            if(this.rule_form.version.length > 0)
+            {
+                this.rule_form.version = '';
+            }
+            
             // http请求数据
             this.loading = true;
             this.$http.post(__host__+'release/get_branch_list', this.rule_form, {emulateJSON: true}).then((response) =>
@@ -173,6 +202,7 @@ new Vue({
                         message: response.data.msg,
                         type: 'error'
                     });
+                    this.rule_form.project_id = '';
                 }
                 this.loading = false;
             }, (response) =>
@@ -182,12 +212,29 @@ new Vue({
                     message: error_msg,
                     type: 'error'
                 });
+                this.rule_form.project_id = '';
                 this.loading = false;
             });
         },
 
         /**
-         * [version_refresh 分支选择/版本刷新]
+         * [version_change 分支选择]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-10T09:44:52+0800
+         * @param    {[object]}                 event [默认事件]
+         */
+        version_change : function(event)
+        {
+            if(this.rule_form.project_id.length > 0 && this.branch_list.length > 0)
+            {
+                this.version_refresh(event);
+            }
+        },
+
+        /**
+         * [version_refresh 版本刷新-获取版本列表]
          * @author   Devil
          * @blog     http://gong.gg/
          * @version  0.0.1
@@ -207,7 +254,20 @@ new Vue({
                 return false;
             }
 
-            // 项目分支校验
+            // 项目分支列表校验
+            if(this.branch_list.length == 0)
+            {
+                this.$message({
+                    showClose: true,
+                    message: '请选择有效项目',
+                    type: 'warning'
+                });
+
+                this.rule_form.branch = '';
+                return false;
+            }
+
+            // 分支选择校验
             if(this.rule_form.branch.length == 0)
             {
                 this.$message({
@@ -216,6 +276,13 @@ new Vue({
                     type: 'warning'
                 });
                 return false;
+            }
+
+            // 数据初始
+            this.version_list = [];
+            if(this.rule_form.version.length > 0)
+            {
+                this.rule_form.version = '';
             }
 
             // http请求数据
@@ -231,6 +298,7 @@ new Vue({
                         message: response.data.msg,
                         type: 'error'
                     });
+                    this.rule_form.branch = '';
                 }
                 this.loading = false;
             }, (response) =>
@@ -240,10 +308,9 @@ new Vue({
                     message: error_msg,
                     type: 'error'
                 });
+                this.rule_form.branch = '';
                 this.loading = false;
             });
-
-            console.log('version', this.rule_form.project_id, this.rule_form.branch);
         }
     }
 });
