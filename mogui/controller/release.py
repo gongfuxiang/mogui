@@ -100,7 +100,7 @@ def get_version_list(request) :
             return function.ajax_return_exit('git切换分支失败', -4, [], output)
 
         # 获取版本列表
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git log --pretty=format:"%h - %s [%cd] <%an>" --date=format:"%Y-%m-%d %H:%M:%S"')
+        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git log --pretty=format:"%h{|}%s{|}[%cd]{|}<%an>" --date=format:"%Y-%m-%d %H:%M:%S" -30')
         if status == 0 :
             version_list = function.get_version_list(output)
             if len(version_list) == 0 :

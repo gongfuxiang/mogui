@@ -74,9 +74,15 @@ def get_branch_list(string) :
 def get_version_list(string) :
     version_list = []
     temp_version = string.split('\n')
+    max_length = 30
     if len(temp_version) > 0 :
         for items in temp_version :
-            version_list.append({'value':items[0:7], 'label':items})
+            temp_ver = items.split('{|}')
+            if len(temp_ver[1]) > max_length :
+                temp_join = '...'
+            else :
+                temp_join = ''
+            version_list.append({'value':temp_ver[0], 'label':temp_ver[0]+' - '+temp_ver[1][0:max_length]+temp_join+' '+temp_ver[2]+' '+temp_ver[3]})
     return version_list
 
 
