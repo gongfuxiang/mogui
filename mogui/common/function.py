@@ -56,10 +56,11 @@ def get_branch_list(string) :
     temp_branch = string.split('\n')
     if len(temp_branch) > 0 :
         for temp_index in range(len(temp_branch)) :
-            temp_location = temp_branch[temp_index].rfind('/');
-            if temp_location != -1 :
-                branch = temp_branch[temp_index][temp_location+1:]
-                branch_list.append({'value':branch, 'label':branch})
+            if temp_branch[temp_index].rfind('->') == -1 :
+                temp_location = temp_branch[temp_index].rfind('/');
+                if temp_location != -1 :
+                    branch = temp_branch[temp_index][temp_location+1:]
+                    branch_list.append({'value':branch, 'label':branch})
     return branch_list
 
 
@@ -106,7 +107,10 @@ def not_empty(string) :
 # @version  0.0.1
 # @blog     http://gongfuxiang.com/
 # @date     2017-08-04
-# @param    [string]   [字符串]
-# @return   [string]   [处理后的字符串]
-def ajax_return_exit(msg, code=0, data=[]) :
-    return HttpResponse(json.dumps({"code":code, "msg":msg, "data":data}))
+# @param    [string]   [错误信息]
+# @param    [int]      [错误码]
+# @param    [list]     [返回数据]
+# @param    [string]   [提示信息]
+# @return   [json]     [json数据]
+def ajax_return_exit(msg, code=0, data=[], tips='') :
+    return HttpResponse(json.dumps({"code":code, "msg":msg, "data":data, "tips":tips}))

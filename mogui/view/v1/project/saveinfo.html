@@ -118,6 +118,15 @@ new Vue({
                             window.location.href=__host__+'project/index';
                         }, 1500);
                     } else {
+                        // git错误提示信息
+                        if(response.data.tips.length > 0)
+                        {
+                            this.$notify({
+                                title: notify_error_title,
+                                message: response.data.tips,
+                                duration: 0
+                            });
+                        }
                         this.loading_submit = false;
                     }
                 }, (response) =>

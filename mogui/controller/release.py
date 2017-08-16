@@ -53,7 +53,7 @@ def get_branch_list(request) :
         if status == 0 :
             return function.ajax_return_exit('操作成功', 0, function.get_branch_list(output))
         else :
-            return function.ajax_return_exit('git执行失败['+output+']', -4)
+            return function.ajax_return_exit('git执行失败', -4, [], output)
     else :
         return function.ajax_return_exit('没有找到相关的项目', -3)
 
@@ -84,10 +84,20 @@ def get_version_list(request) :
         if os.path.exists(git_dir_address) == False:
                 return function.ajax_return_exit('项目路径地址不存在', -1)
 
-        # 切换分支
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git checkout .;git fetch origin '+branch+';git checkout '+branch)
+        # 放弃本地修改
+        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git checkout .')
         if status != 0 :
-            return function.ajax_return_exit('git分支切换失败['+output+']', -4)
+            return function.ajax_return_exit('git丢弃本地修改项失败', -4, [], output)
+
+        # 拉取远程分支最新代码
+        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git fetch origin '+branch)
+        if status != 0 :
+            return function.ajax_return_exit('git拉取远程分支失败', -4, [], output)
+
+        # 切换分支
+        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git checkout '+branch)
+        if status != 0 :
+            return function.ajax_return_exit('git切换分支失败', -4, [], output)
 
         # 获取版本列表
         (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git log --pretty=format:"%h - %s [%cd] <%an>" --date=format:"%Y-%m-%d %H:%M:%S"')
@@ -98,7 +108,7 @@ def get_version_list(request) :
             else :
                 return function.ajax_return_exit('操作成功', 0, version_list)
         else :
-            return function.ajax_return_exit('git执行失败['+output+']', -4)
+            return function.ajax_return_exit('git执行失败', -4, [], output)
     else :
         return function.ajax_return_exit('没有找到相关的项目', -3)
 

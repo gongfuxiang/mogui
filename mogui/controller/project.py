@@ -94,6 +94,20 @@ def save(request) :
         if os.path.exists(git_dir_address) == True :
             shutil.rmtree(git_dir_address)
 
+    # 目录不存在则创建
+    if os.path.exists(request.POST['dir_address']) == False :
+        os.mkdir(request.POST['dir_address'])
+
+    # 创建分支
+    if os.path.exists(git_dir_address) == False :
+        (status, output) = commands.getstatusoutput('cd '+request.POST['dir_address']+';git clone '+request.POST['git_ssh_address'])
+
+    # 项目是否拉取成功
+    if status != 0 :
+        return function.ajax_return_exit('git克隆失败', -1, [], output)
+
+    # 等于0则添加
+    if project_id == '0' :
         # 数据添加
         Project(
             project_name=request.POST['project_name'],
@@ -111,14 +125,6 @@ def save(request) :
             is_cluster=request.POST['is_cluster'],
             describe=request.POST['describe']
         )
-
-    # 目录不存在则创建
-    if os.path.exists(request.POST['dir_address']) == False :
-        os.mkdir(request.POST['dir_address'])
-
-    # 创建分支
-    if os.path.exists(git_dir_address) == False :
-        (status, output) = commands.getstatusoutput('cd '+request.POST['dir_address']+';git clone '+request.POST['git_ssh_address']);
 
     # 返回数据
     return function.ajax_return_exit('操作成功')

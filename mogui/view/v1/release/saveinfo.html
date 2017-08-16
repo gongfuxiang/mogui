@@ -203,6 +203,16 @@ new Vue({
                         message: response.data.msg,
                         type: 'error'
                     });
+
+                    // git错误提示信息
+                    if(response.data.tips.length > 0)
+                    {
+                        this.$notify({
+                            title: notify_error_title,
+                            message: response.data.tips,
+                            duration: 0
+                        });
+                    }
                     this.rule_form.project_id = '';
                 }
                 this.loading = false;
@@ -228,7 +238,7 @@ new Vue({
          */
         version_change : function(event)
         {
-            if(this.rule_form.project_id.length > 0 && this.branch_list.length > 0)
+            if(this.rule_form.project_id.length > 0 && this.branch_list.length > 0 && this.rule_form.branch.length > 0)
             {
                 this.version_refresh(event);
             }
@@ -299,6 +309,16 @@ new Vue({
                         message: response.data.msg,
                         type: 'error'
                     });
+
+                    // git错误提示信息
+                    if(response.data.tips.length > 0)
+                    {
+                        this.$notify({
+                            title: notify_error_title,
+                            message: response.data.tips,
+                            duration: 0
+                        });
+                    }
                     this.rule_form.branch = '';
                 }
                 this.loading = false;
