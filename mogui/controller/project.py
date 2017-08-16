@@ -102,9 +102,9 @@ def save(request) :
     if os.path.exists(git_dir_address) == False :
         (status, output) = commands.getstatusoutput('cd '+request.POST['dir_address']+';git clone '+request.POST['git_ssh_address'])
 
-    # 项目是否拉取成功
-    if status != 0 :
-        return function.ajax_return_exit('git克隆失败', -1, [], output)
+        # 项目是否拉取成功
+        if status != 0 :
+            return function.ajax_return_exit('git克隆失败', -1, [], output)
 
     # 等于0则添加
     if project_id == '0' :
