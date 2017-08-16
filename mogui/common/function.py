@@ -11,6 +11,11 @@
 from django.http import HttpResponse
 import json
 
+# 特殊字符处理（超出ascii处理的范围）
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 # 获取项目名称
 # @author   Devil
 # @version  0.0.1
@@ -82,7 +87,7 @@ def get_version_list(string) :
                 temp_join = '...'
             else :
                 temp_join = ''
-            version_list.append({'value':temp_ver[0], 'label':temp_ver[0]+' - '+temp_ver[1][0:max_length]+temp_join+' '+temp_ver[2]+' '+temp_ver[3]})
+            version_list.append({'value':temp_ver[0], 'label':temp_ver[0]+' - '+temp_ver[1].decode('utf8')[0:max_length]+temp_join+' '+temp_ver[2]+' '+temp_ver[3]})
     return version_list
 
 
