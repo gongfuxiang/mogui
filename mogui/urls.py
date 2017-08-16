@@ -53,6 +53,12 @@ urlpatterns = [
     # 获取分支列表
     url(r'^release/get_branch_list$', release.get_branch_list),
 
+    # 获取上线工单列表
+    url(r'^release/get_release_list$', release.get_release_list),
+
+    # 上线工单删除
+    url(r'^release/release_delete$', release.release_delete),
+
     # 上线单保存
     url(r'^release/save$', release.save),
 

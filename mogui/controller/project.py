@@ -130,7 +130,7 @@ def save(request) :
     return function.ajax_return_exit('操作成功')
 
 
-# 删除删除
+# 数据删除
 # @author   Devil
 # @version  0.0.1
 # @blog     http://gongfuxiang.com/
