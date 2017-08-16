@@ -28,13 +28,9 @@ def index(request) :
 # @param    [request]   [请求对象]
 def saveinfo(request) :
     # 项目id
-    try :
-        project_id = int(request.GET.get('id', 0))
-    except ValueError :
-        project_id = 0
-
-    # 获取项目数据
-    if project_id != 0 :
+    project_id = request.GET.get('id', '0')
+    if project_id != '0' :
+        # 获取项目数据
         data = Project.objects.filter(project_id=project_id).first()
         if data != None :
             data.describe = data.describe.replace("\n", '\\n')
@@ -75,8 +71,7 @@ def get_project_list(request) :
         #x = time.localtime(1317091800.0)
         #items['create_time_text'] = str(time.strftime('%Y-%m-%d %H:%M:%S',x))
 
-    result = {"code":0, "msg":"操作成功", "data":serializer(data)}
-    return HttpResponse(json.dumps(result))
+    return function.ajax_return_exit('操作成功', 0, serializer(data))
 
 
 # 数据保存
@@ -126,8 +121,7 @@ def save(request) :
         (status, output) = commands.getstatusoutput('cd '+request.POST['dir_address']+';git clone '+request.POST['git_ssh_address']);
 
     # 返回数据
-    result = {"code":0, "msg":"操作成功", "data":[]}
-    return HttpResponse(json.dumps(result))
+    return function.ajax_return_exit('操作成功')
 
 
 # 删除删除
@@ -143,5 +137,4 @@ def project_delete(request) :
         Project.objects.filter(project_id=project_id).delete()
 
     # 返回数据
-    result = {"code":0, "msg":"删除成功", "data":[]}
-    return HttpResponse(json.dumps(result))
+    return function.ajax_return_exit('删除成功')

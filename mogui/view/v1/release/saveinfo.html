@@ -44,10 +44,11 @@ new Vue({
         loading_submit: false,
         rule_form: {
             csrfmiddlewaretoken: '{{ csrf_token }}' ,
-            title: '{{ data.title }}',
-            project_id : '{{ project_id }}',
-            branch: '{{ data.branch }}',
-            version: '{{ data.version }}'
+            title: '',
+            project_id : '',
+            branch: '',
+            version: '',
+            status: 0
         },
         rules: {
             title: [
@@ -108,7 +109,7 @@ new Vue({
                     {
                         setTimeout(function()
                         {
-                            window.location.href=__host__+'project/index';
+                            window.location.href=__host__+'release/index';
                         }, 1500);
                     } else {
                         this.loading_submit = false;

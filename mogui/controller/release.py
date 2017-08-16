@@ -10,7 +10,7 @@
 
 from django.shortcuts import render
 from django.views.decorators import csrf
-from mogui.model.models import Project
+from mogui.model.models import Project,Release
 from dss.Serializer import serializer
 import commands,os
 from mogui.common import function
@@ -36,28 +36,26 @@ def saveinfo(request) :
 # @return   [json]      [josn]
 def get_branch_list(request) :
     # 项目id
-    try :
-        project_id = int(request.POST.get('project_id', 0))
-    except ValueError :
-        project_id = 0
+    project_id = request.POST.get('project_id', '0')
+    if project_id == '0' :
+        return function.ajax_return_exit('项目id不能为空', -1)
 
     # 获取项目数据
-    ret = {}
-    branch_list = {}
-    if project_id != 0 :
-        data = Project.objects.filter(project_id=project_id).first()
-        if data != None :
-            # 获取项目名称
-            git_dir_address = function.get_git_address(data.dir_address, data.git_ssh_address)
-            if os.path.exists(git_dir_address) == False:
-                return function.ajax_return_exit('项目路径地址不存在', -1)
+    data = Project.objects.filter(project_id=project_id).first()
+    if data != None :
+        # 获取项目名称
+        git_dir_address = function.get_git_address(data.dir_address, data.git_ssh_address)
+        if os.path.exists(git_dir_address) == False:
+            return function.ajax_return_exit('项目路径地址不存在', -1)
 
-            # 获取版本列表
-            (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git branch -a')
-            if status == 0 :
-                branch_list = function.get_branch_list(output)
-
-    return function.ajax_return_exit('操作成功', 0, branch_list)
+        # 获取版本列表
+        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git branch -a')
+        if status == 0 :
+            return function.ajax_return_exit('操作成功', 0, function.get_branch_list(output))
+        else :
+            return function.ajax_return_exit('git执行失败['+output+']', -4)
+    else :
+        return function.ajax_return_exit('没有找到相关的项目', -3)
 
 
 # 获取版本列表
@@ -69,16 +67,13 @@ def get_branch_list(request) :
 # @return   [json]      [josn]
 def get_version_list(request) :
     # 项目id
-    try :
-        project_id = int(request.POST.get('project_id', 0))
-    except ValueError :
-        project_id = 0
-    if project_id == 0 :
+    project_id = request.POST.get('project_id', '0')
+    if project_id == '0' :
         return function.ajax_return_exit('项目id不能为空', -1)
 
     # 分支
     branch = request.POST.get('branch')
-    if len(branch) == 0 :
+    if len(branch) == '0' :
         return function.ajax_return_exit('请选择项目分支', -2)
 
     # 获取项目数据
@@ -106,3 +101,24 @@ def get_version_list(request) :
             return function.ajax_return_exit('git执行失败['+output+']', -4)
     else :
         return function.ajax_return_exit('没有找到相关的项目', -3)
+
+
+# 数据保存
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gongfuxiang.com/
+# @date     2017-08-16
+# @param    [request]   [请求对象]
+# @return   [json]      [josn]
+def save(request) :
+    # 数据添加
+    Release(
+        project_id=request.POST['project_id'],
+        title=request.POST['title'],
+        branch=request.POST['branch'],
+        version=request.POST['version'],
+        status=request.POST.get('status', 0)
+    ).save()
+
+    # 返回数据
+    return function.ajax_return_exit('操作成功')

@@ -53,6 +53,9 @@ urlpatterns = [
     # 获取分支列表
     url(r'^release/get_branch_list$', release.get_branch_list),
 
+    # 上线单保存
+    url(r'^release/save$', release.save),
+
     # 获取版本列表
     url(r'^release/get_version_list$', release.get_version_list),
 
