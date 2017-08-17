@@ -11,7 +11,7 @@ from mogui.common import function
 # 项目列表页面
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-05
 # @param    [request]   [请求对象]
 def index(request) :
@@ -23,7 +23,7 @@ def index(request) :
 # 数据编辑页面
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-05
 # @param    [request]   [请求对象]
 def saveinfo(request) :
@@ -47,7 +47,7 @@ def saveinfo(request) :
 # 列表获取
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-05
 # @param    [request]   [请求对象]
 # @return   [json]      [josn]
@@ -77,7 +77,7 @@ def get_project_list(request) :
 # 数据保存
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-04
 # @param    [request]   [请求对象]
 # @return   [json]      [josn]
@@ -133,14 +133,15 @@ def save(request) :
 # 数据删除
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-04
 # @param    [request]   [请求对象]
 # @return   [json]      [josn]
 def project_delete(request) :
     project_id = request.POST.get('project_id', '0')
-    if project_id != '0' :
-        Project.objects.filter(project_id=project_id).delete()
+    if project_id == '0' :
+        return function.ajax_return_exit('参数错误', -1)
+    Project.objects.filter(project_id=project_id).delete()
 
     # 返回数据
     return function.ajax_return_exit('删除成功')

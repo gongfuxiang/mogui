@@ -19,7 +19,7 @@ sys.setdefaultencoding('utf8')
 # 获取项目名称
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-04
 # @param    [string]    [git ssh地址]
 # @return   [string]    [git项目名称]
@@ -33,7 +33,7 @@ def get_git_ssh_name(url) :
 # 获取项目地址
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-04
 # @param    [string]     [git目录地址]
 # @return   [string]     [git目录+项目名称地址]
@@ -52,7 +52,7 @@ def get_git_address(dir_name, url) :
 # 获取分支列表
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-04
 # @param    [string]   [版本字符串]
 # @return   [list]     [版本列表]
@@ -72,7 +72,7 @@ def get_branch_list(string) :
 # 获取版本列表
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-04
 # @param    [string]   [版本字符串]
 # @return   [list]     [版本列表]
@@ -94,7 +94,7 @@ def get_version_list(string) :
 # 移除list中所有空值项
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-04
 # @param    [string]   [字符串]
 # @return   [list]     [版本列表]
@@ -105,7 +105,7 @@ def remove_list_empty(l) :
 # 移除字符串前后空字符串
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-04
 # @param    [string]   [字符串]
 # @return   [string]   [处理后的字符串]
@@ -116,7 +116,7 @@ def not_empty(string) :
 # ajax请求返回退出
 # @author   Devil
 # @version  0.0.1
-# @blog     http://gongfuxiang.com/
+# @blog     http://gong.gg/
 # @date     2017-08-04
 # @param    [string]   [错误信息]
 # @param    [int]      [错误码]

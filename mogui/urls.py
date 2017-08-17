@@ -59,6 +59,9 @@ urlpatterns = [
     # 上线工单删除
     url(r'^release/release_delete$', release.release_delete),
 
+    # 上线工单发布
+    url(r'^release/handle_release$', release.handle_release),
+
     # 上线单保存
     url(r'^release/save$', release.save),
 
