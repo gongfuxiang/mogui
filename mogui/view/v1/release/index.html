@@ -102,49 +102,57 @@ new Vue({
          */
         handle_release : function(release_id, project_id, handle_type)
         {
-            this.loading = true;
-            this.$http.post(__host__+'release/handle_release', {csrfmiddlewaretoken:'{{ csrf_token }}', release_id:release_id, project_id:project_id, handle_type:handle_type}, {emulateJSON: true}).then((response) => 
+            var type_msg = (handle_type == 1) ? '正式发布上线' : '回滚到上一次保留的状态';
+            this.$confirm('此操作将'+type_msg+', 是否继续?', '提示',
             {
-                console.log(response.data);
-                if(response.data.code == 0)
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.loading = true;
+                this.$http.post(__host__+'release/handle_release', {csrfmiddlewaretoken:'{{ csrf_token }}', release_id:release_id, project_id:project_id, handle_type:handle_type}, {emulateJSON: true}).then((response) => 
+                {
+                    console.log(response.data);
+                    if(response.data.code == 0)
+                    {
+                        this.$message({
+                            showClose: true,
+                            message: response.data.msg,
+                            type: 'success'
+                        });
+
+                        setTimeout(function()
+                        {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        // git错误提示信息
+                        if(response.data.tips.length > 0)
+                        {
+                            this.$notify({
+                                title: notify_error_title,
+                                message: response.data.tips,
+                                duration: 0
+                            });
+                        }
+
+                        this.$message({
+                            showClose: true,
+                            message: response.data.msg,
+                            type: 'warning'
+                        });
+                    }
+                    this.loading = false;
+                }, (response) =>
                 {
                     this.$message({
                         showClose: true,
-                        message: response.data.msg,
-                        type: 'success'
+                        message: error_msg,
+                        type: 'error'
                     });
-
-                    setTimeout(function()
-                    {
-                        window.location.reload();
-                    }, 1000);
-                } else {
-                    // git错误提示信息
-                    if(response.data.tips.length > 0)
-                    {
-                        this.$notify({
-                            title: notify_error_title,
-                            message: response.data.tips,
-                            duration: 0
-                        });
-                    }
-
-                    this.$message({
-                        showClose: true,
-                        message: response.data.msg,
-                        type: 'warning'
-                    });
-                }
-                this.loading = false;
-            }, (response) =>
-            {
-                this.$message({
-                    showClose: true,
-                    message: error_msg,
-                    type: 'error'
+                    this.loading = false;
                 });
-                this.loading = false;
-            });
+            }).catch(() => {});
         },
 
         /**
