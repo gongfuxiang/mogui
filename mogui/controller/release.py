@@ -208,7 +208,8 @@ def handle_release(request) :
     # 参数校验
     project_id = request.POST.get('project_id', '0')
     release_id = request.POST.get('release_id', '0')
-    if project_id == '0' || release_id == '0' :
+    handle_type = int(request.POST.get('handle_type', 1))
+    if project_id == '0' or release_id == '0' :
         return function.ajax_return_exit('参数错误', -1)
 
     # 获取项目数据
@@ -247,11 +248,26 @@ def handle_release(request) :
     if status != 0 :
         return function.ajax_return_exit('git分支切换失败', -13, [], output)
 
-    # git更新到工单指定分支与版本
-    (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git reset --hard '+release.version)
-    if status != 0 :
-        return function.ajax_return_exit('上线失败', -100, [], output)
+    if handle_type == 1 :
+        # git更新到工单指定分支与版本
+        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git reset --hard '+release.version)
+        if status != 0 :
+            return function.ajax_return_exit('上线失败', -100, [], output)
+    elif handle_type == 2 :
+        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git checkout '+release.backup_name)
+        if status != 0 :
+            return function.ajax_return_exit('上线失败', -100, [], output)
+    else :
+        return function.ajax_return_exit('上线工单类型错误', -99)
         
     # 更新工单数据
-    
-    return function.ajax_return_exit('上线成功')
+    if handle_type == 1 :
+        Release.objects.filter(release_id=release_id).update(
+            status=1,
+            backup_name=backup_name
+        )
+        msg = '上线成功'
+    else :
+        Release.objects.filter(release_id=release_id).update(status=2)
+        msg = '回滚成功'
+    return function.ajax_return_exit(msg)

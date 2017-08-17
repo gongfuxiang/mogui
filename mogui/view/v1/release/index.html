@@ -21,11 +21,11 @@
         <el-table-column prop="status_text" label="状态" width="100"></el-table-column>
         <el-table-column label="操作" width="110" fixed="right">
             <template scope="scope">
-                <el-tooltip class="item" effect="dark" content="回滚" placement="top">
-                    <el-button type="info" :plain="true" size="mini" icon="arrow-left" @click="handle_release(scope.row.release_id)" v-show="scope.row.is_rollback_show"></el-button>
+                <el-tooltip class="item rollback-submit" effect="dark" content="回滚" placement="top">
+                    <el-button type="info" :plain="true" size="mini" icon="arrow-left" @click="handle_release(scope.row.release_id, scope.row.project_id, 2)" v-show="scope.row.is_rollback_show"></el-button>
                 </el-tooltip>
-                <el-tooltip class="item" effect="dark" content="上线" placement="top">
-                    <el-button type="info" :plain="true" size="mini" icon="upload" @click="handle_release(scope.row.release_id)" v-shoe="scope.row.is_release_show"></el-button>
+                <el-tooltip class="item release-submit" effect="dark" content="上线" placement="top">
+                    <el-button type="info" :plain="true" size="mini" icon="upload" @click="handle_release(scope.row.release_id, scope.row.project_id, 1)" v-show="scope.row.is_release_show"></el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="删除" placement="top">
                     <el-button type="danger" :plain="true" size="mini" icon="delete" @click="handle_delete(scope.$index, scope.row.release_id)" v-show="scope.row.is_delete_show"></el-button>
@@ -97,22 +97,38 @@ new Vue({
          * @version  0.0.1
          * @datetime 2017-08-06T17:12:12+0800
          * @param    {[int]}              release_id [上线工单id]
+         * @param    {[int]}              project_id [项目id]
+         * @param    {[int]}              handle_type[操作类型 1上线, 2回滚]
          */
-        handle_release : function(release_id)
+        handle_release : function(release_id, project_id, handle_type)
         {
             this.loading = true;
-            this.$http.post(__host__+'release/handle_release', {csrfmiddlewaretoken:'{{ csrf_token }}', release_id:release_id}, {emulateJSON: true}).then((response) => 
+            this.$http.post(__host__+'release/handle_release', {csrfmiddlewaretoken:'{{ csrf_token }}', release_id:release_id, project_id:project_id, handle_type:handle_type}, {emulateJSON: true}).then((response) => 
             {
                 console.log(response.data);
                 if(response.data.code == 0)
                 {
-
                     this.$message({
                         showClose: true,
                         message: response.data.msg,
                         type: 'success'
                     });
+
+                    setTimeout(function()
+                    {
+                        window.location.reload();
+                    }, 1000);
                 } else {
+                    // git错误提示信息
+                    if(response.data.tips.length > 0)
+                    {
+                        this.$notify({
+                            title: notify_error_title,
+                            message: response.data.tips,
+                            duration: 0
+                        });
+                    }
+
                     this.$message({
                         showClose: true,
                         message: response.data.msg,
@@ -129,8 +145,6 @@ new Vue({
                 });
                 this.loading = false;
             });
-
-            //window.location.href=__host__+'project/saveinfo?id='+id;
         },
 
         /**

@@ -25,6 +25,7 @@ class Release(models.Model) :
     title = models.CharField(u'标题', max_length=60)
     branch = models.CharField(u'分支', max_length=160)
     version = models.CharField(u'版本', max_length=80)
+    backup_name = models.CharField(u'备份分支名称(以backup_开头)', max_length=255)
     status = models.SmallIntegerField(u'状态[ 0未发布, 1已发布, 2已回滚 ]', default=0)
     create_time = models.DateTimeField(u'创建时间', auto_now_add=True, null=True)
     update_time = models.DateTimeField(u'更新时间', auto_now=True, null=True)

@@ -55,12 +55,6 @@ def nav_left(request) :
                     'url' : host+'release/index',
                     'is_show' : True,
                     'index' : '2-1',
-                },
-                {
-                    'name' : '创建上线',
-                    'url' : host+'release/saveinfo',
-                    'is_show' : True,
-                    'index' : '2-2',
                 }
             ]
         },
