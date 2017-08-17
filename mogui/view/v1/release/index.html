@@ -1,6 +1,6 @@
 {% include "../base/header.html" %}
 
-<div id="app" v-loading="loading" element-loading-text="加载中...">
+<div id="app" v-loading="loading" element-loading-text="处理中...">
     <form class="search-form" action="" method="post">
         <el-input placeholder="请输入搜索内容" v-model="search.keywords" class="keywords">
             <el-button slot="append" icon="search" @click="get_release_list"></el-button>

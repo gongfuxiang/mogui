@@ -94,17 +94,29 @@ def save(request) :
         if os.path.exists(git_dir_address) == True :
             shutil.rmtree(git_dir_address)
 
-    # 目录不存在则创建
+    # 项目实际地址-目录不存在则创建
     if os.path.exists(request.POST['dir_address']) == False :
         os.mkdir(request.POST['dir_address'])
 
-    # 创建分支
+    # 项目实际地址-克隆代码
     if os.path.exists(git_dir_address) == False :
         (status, output) = commands.getstatusoutput('cd '+request.POST['dir_address']+';git clone '+request.POST['git_ssh_address'])
-
-        # 项目是否拉取成功
         if status != 0 :
-            return function.ajax_return_exit('git克隆失败', -1, [], output)
+            return function.ajax_return_exit('git克隆失败', -10, [], output)
+
+    # 临时操作地址
+    project_temp_dir = function.get_project_handle_temp_dir()
+    project_git_name = function.get_git_ssh_name(request.POST['git_ssh_address'])
+
+    # 临时操作地址-目录不存在则创建
+    if os.path.exists(project_temp_dir) == False :
+        os.mkdir(project_temp_dir)
+
+    # 临时操作地址-克隆代码
+    if os.path.exists(project_temp_dir+'/'+project_git_name) == False :
+        (status, output) = commands.getstatusoutput('cd '+project_temp_dir+';git clone '+request.POST['git_ssh_address'])
+        if status != 0 :
+            return function.ajax_return_exit('git克隆失败', -10, [], output)
 
     # 等于0则添加
     if project_id == '0' :

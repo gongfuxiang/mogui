@@ -9,12 +9,24 @@
 # ============================================================
 
 from django.http import HttpResponse
+from django.conf import settings
 import json
 
 # 特殊字符处理（超出ascii处理的范围）
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
+
+
+# 获取项目临时操作地址
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gong.gg/
+# @date     2017-08-04
+# @return   [string]    [项目临时操作地址]
+def get_project_handle_temp_dir() :
+    return settings.BASE_DIR+'/temp_project'
+
 
 # 获取项目名称
 # @author   Devil

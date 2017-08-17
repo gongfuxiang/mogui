@@ -9,3 +9,4 @@ Logs
 logs
 *.lock
 *.pyc
+temp_project
