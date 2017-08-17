@@ -54,6 +54,7 @@ def saveinfo(request) :
 def get_project_list(request) :
     keywords = request.POST.get('keywords', '')
     data = Project.objects.filter(project_name__contains=keywords).all().order_by('-project_id').values('project_id', 'project_name', 'git_ssh_address', 'dir_address', 'is_cluster', 'describe', 'create_time')
+    result = []
     for items in data :
         # 描述
         #items['describe'] = items['describe'].replace("\n", '<br />')
@@ -65,13 +66,12 @@ def get_project_list(request) :
             items['is_cluster_text'] = u'是'
 
         # 日期
-        #items['create_time_text'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(items['create_time'])))
-        # dateArray = datetime.utcfromtimestamp(int(items['create_time']))
-        # items['create_time_text'] = dateArray.strftime("%Y-%m-%d %H:%M:%S")
-        #x = time.localtime(1317091800.0)
-        #items['create_time_text'] = str(time.strftime('%Y-%m-%d %H:%M:%S',x))
+        items['create_time'] = items['create_time'].strftime('%Y-%m-%d %H:%M');
 
-    return function.ajax_return_exit('操作成功', 0, serializer(data))
+        # 追加到列表中
+        result.append(items);
+
+    return function.ajax_return_exit('操作成功', 0, result)
 
 
 # 数据保存

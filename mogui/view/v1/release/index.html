@@ -15,9 +15,9 @@
     <el-table :data="table_data" stripe border class="content-table m-t-15">
         <el-table-column prop="project_name" label="项目" width="180" fixed="left" sortable></el-table-column>
         <el-table-column prop="title" label="上线单标题" width="180" sortable></el-table-column>
-        <el-table-column prop="branch" label="git分支" width="180"></el-table-column>
-        <el-table-column prop="version" label="commit版本" width="150"></el-table-column>
-        <el-table-column prop="create_time" label="创建时间" width="150" sortable></el-table-column>
+        <el-table-column prop="branch" label="git分支" width="260"></el-table-column>
+        <el-table-column prop="version" label="commit版本" width="120"></el-table-column>
+        <el-table-column prop="create_time" label="创建时间" width="160" sortable></el-table-column>
         <el-table-column prop="status_text" label="状态" width="100"></el-table-column>
         <el-table-column label="操作" width="110" fixed="right">
             <template scope="scope">

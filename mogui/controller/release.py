@@ -38,6 +38,7 @@ def saveinfo(request) :
 def get_release_list(request) :
     keywords = request.POST.get('keywords', '')
     data = Release.objects.filter(title__contains=keywords).all().order_by('-release_id').values('release_id', 'project_id', 'title', 'branch', 'version', 'status', 'create_time')
+    result = []
     if data != None :
         status_list = [u'未发布', u'已发布', u'已回滚']
         for items in data :
@@ -65,15 +66,13 @@ def get_release_list(request) :
             # 状态处理
             items['status_text'] = status_list[items['status']]
 
-
             # 日期
-            #items['create_time_text'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(items['create_time'])))
-            # dateArray = datetime.utcfromtimestamp(int(items['create_time']))
-            # items['create_time_text'] = dateArray.strftime("%Y-%m-%d %H:%M:%S")
-            #x = time.localtime(1317091800.0)
-            #items['create_time_text'] = str(time.strftime('%Y-%m-%d %H:%M:%S',x))
+            items['create_time'] = items['create_time'].strftime('%Y-%m-%d %H:%M');
 
-    return function.ajax_return_exit('操作成功', 0, serializer(data))
+            # 追加到列表中
+            result.append(items);
+
+    return function.ajax_return_exit('操作成功', 0, result)
 
 
 # 获取分支列表
