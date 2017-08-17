@@ -6,5 +6,5 @@ from django.conf import settings
  
 def index(request) :
     context          = {}
-    context['hello'] = 'Hello World!'+settings.BASE_DIR
+    context['hello'] = 'Hello World!'
     return render(request, 'welcome/index.html', context)

@@ -38,37 +38,40 @@ def saveinfo(request) :
 def get_release_list(request) :
     keywords = request.POST.get('keywords', '')
     data = Release.objects.filter(title__contains=keywords).all().order_by('-release_id').values('release_id', 'project_id', 'title', 'branch', 'version', 'status', 'create_time')
-    status_list = [u'未发布', u'已发布', u'已回滚']
-    for items in data :
-        # 获取项目信息
-        project = Project.objects.filter(project_id=items['project_id']).first()
-        if data != None :
-            items['project_name'] = project.project_name
+    if data != None :
+        status_list = [u'未发布', u'已发布', u'已回滚']
+        for items in data :
+            # 获取项目信息
+            project = Project.objects.filter(project_id=items['project_id']).first()
+            if project != None :
+                items['project_name'] = project.project_name
+            else :
+                items['project_name'] = ''
 
-        # 状态操作按钮处理
-        if items['status'] == 0 :
-            items['is_release_show'] = True
-            items['is_delete_show'] = True
-            items['is_rollback_show'] = False
-        elif items['status'] == 1 :
-            items['is_release_show'] = False
-            items['is_delete_show'] = False
-            items['is_rollback_show'] = True
-        elif items['status'] == 2 :
-            items['is_release_show'] = False
-            items['is_delete_show'] = False
-            items['is_rollback_show'] = False
+            # 状态操作按钮处理
+            if items['status'] == 0 :
+                items['is_release_show'] = True
+                items['is_delete_show'] = True
+                items['is_rollback_show'] = False
+            elif items['status'] == 1 :
+                items['is_release_show'] = False
+                items['is_delete_show'] = False
+                items['is_rollback_show'] = True
+            else :
+                items['is_release_show'] = False
+                items['is_delete_show'] = False
+                items['is_rollback_show'] = False
 
-        # 状态处理
-        items['status_text'] = status_list[items['status']]
+            # 状态处理
+            items['status_text'] = status_list[items['status']]
 
 
-        # 日期
-        #items['create_time_text'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(items['create_time'])))
-        # dateArray = datetime.utcfromtimestamp(int(items['create_time']))
-        # items['create_time_text'] = dateArray.strftime("%Y-%m-%d %H:%M:%S")
-        #x = time.localtime(1317091800.0)
-        #items['create_time_text'] = str(time.strftime('%Y-%m-%d %H:%M:%S',x))
+            # 日期
+            #items['create_time_text'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(items['create_time'])))
+            # dateArray = datetime.utcfromtimestamp(int(items['create_time']))
+            # items['create_time_text'] = dateArray.strftime("%Y-%m-%d %H:%M:%S")
+            #x = time.localtime(1317091800.0)
+            #items['create_time_text'] = str(time.strftime('%Y-%m-%d %H:%M:%S',x))
 
     return function.ajax_return_exit('操作成功', 0, serializer(data))
 
