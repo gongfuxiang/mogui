@@ -1,12 +1,21 @@
 # -*- coding: UTF-8 -*-
 
+# ============================================================
+# 项目管理
+# author    Devil
+# blog      http://gong.gg/
+# version   0.0.1
+# datetime  2017-07-27
+# ============================================================
+
 from django.shortcuts import render
 from django.views.decorators import csrf
 from mogui.model.models import Project
 from django.http import HttpResponse
 from dss.Serializer import serializer
-import json,time,datetime,commands,os,shutil
+import time,commands,os,shutil
 from mogui.common import function
+
 
 # 项目列表页面
 # @author   Devil
@@ -15,9 +24,7 @@ from mogui.common import function
 # @date     2017-08-05
 # @param    [request]   [请求对象]
 def index(request) :
-    context          = {}
-    context['hello'] = 'project index'
-    return render(request, 'project/index.html', context)
+    return render(request, 'project/index.html')
 
 
 # 数据编辑页面

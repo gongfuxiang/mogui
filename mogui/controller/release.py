@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 # ============================================================
-# 发布上线单
+# 上线单管理
 # author    Devil
 # blog      http://gong.gg/
 # version   0.0.1
@@ -15,11 +15,23 @@ from dss.Serializer import serializer
 import commands,os,time
 from mogui.common import function
 
-def index(request) :
-    context          = {}
-    context['hello'] = 'release index'
-    return render(request, 'release/index.html', context)
 
+# 上线单列表页面
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gong.gg/
+# @date     2017-08-16
+# @param    [request]   [请求对象]
+def index(request) :
+    return render(request, 'release/index.html')
+
+
+# 上线单添加页面
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gong.gg/
+# @date     2017-08-16
+# @param    [request]   [请求对象]
 def saveinfo(request) :
     data = Project.objects.all().order_by('-project_id').values('project_id', 'project_name')
     context = {
@@ -37,7 +49,7 @@ def saveinfo(request) :
 # @return   [json]      [josn]
 def get_release_list(request) :
     keywords = request.POST.get('keywords', '')
-    data = Release.objects.filter(title__contains=keywords).all().order_by('-release_id').values('release_id', 'project_id', 'title', 'branch', 'version', 'status', 'create_time')
+    data = Release.objects.filter(title__contains=keywords).all().order_by('-release_id').values('release_id', 'project_id', 'title', 'branch', 'version', 'status', 'create_time')[0:60]
     result = []
     if data != None :
         status_list = [u'未发布', u'已发布', u'已回滚']

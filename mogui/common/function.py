@@ -10,7 +10,10 @@
 
 from django.http import HttpResponse
 from django.conf import settings
-import json
+try :
+    import json # python >= 2.6
+except ImportError:
+    import simplejson as json # python <= 2.5
 
 # 特殊字符处理（超出ascii处理的范围）
 import sys
