@@ -6,6 +6,7 @@ a { text-decoration: none; }
 img { border: 0px; }
 .oh { overflow: hidden; }
 .m-t-15 { margin-top: 15px; }
+.m-b-15 { margin-bottom: 15px; }
 .fl { float: left; }
 .fr { float: right; }
 .tl { text-align: left; }

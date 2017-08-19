@@ -31,7 +31,7 @@
         </el-table-column>
     </el-table>
 
-    <el-pagination @size-change="handle_size_change" @current-change="handle_current_change" :current-page="1" :page-sizes="{{ page.page_sizes }}" :page-size="page_size" layout="{{ page.page_layout }}" :total="{{ count }}" class="tr m-t-15"></el-pagination>
+    <el-pagination @size-change="handle_size_change" @current-change="handle_current_change" :current-page="1" :page-sizes="{{ page.page_sizes }}" :page-size="page_size" layout="{{ page.page_layout }}" :total="{{ count }}" class="tr m-t-15 m-b-15"></el-pagination>
 </div>
 
 {% include "../base/footer.html" %}
