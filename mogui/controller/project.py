@@ -14,7 +14,7 @@ from mogui.model.models import Project
 from django.http import HttpResponse
 from dss.Serializer import serializer
 import time,commands,os,shutil
-from mogui.common import function
+from mogui.common import function,config
 
 
 # 项目列表页面
@@ -24,7 +24,11 @@ from mogui.common import function
 # @date     2017-08-05
 # @param    [request]   [请求对象]
 def index(request) :
-    return render(request, 'project/index.html')
+    context = {
+        'count' : Project.objects.count(),
+        'page' : config.page
+    }
+    return render(request, 'project/index.html', context)
 
 
 # 数据编辑页面
@@ -36,7 +40,7 @@ def index(request) :
 def saveinfo(request) :
     # 项目id
     project_id = request.GET.get('id', '0')
-    if project_id != '0' :
+    if project_id != '0' and project_id != '' :
         # 获取项目数据
         data = Project.objects.filter(project_id=project_id).first()
         if data != None :
@@ -60,7 +64,10 @@ def saveinfo(request) :
 # @return   [json]      [josn]
 def get_project_list(request) :
     keywords = request.POST.get('keywords', '')
-    data = Project.objects.filter(project_name__contains=keywords).all().order_by('-project_id').values('project_id', 'project_name', 'git_ssh_address', 'dir_address', 'is_cluster', 'describe', 'create_time')
+    page = int(request.POST.get('page', 1))-1
+    page_size = int(request.POST.get('page_size', config.page['page_size']))
+    page_start = page*page_size
+    data = Project.objects.filter(project_name__contains=keywords).all().order_by('-project_id').values('project_id', 'project_name', 'git_ssh_address', 'dir_address', 'is_cluster', 'describe', 'create_time')[page_start:page_start+page_size]
     result = []
     for items in data :
         # 描述

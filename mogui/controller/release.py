@@ -13,7 +13,7 @@ from django.views.decorators import csrf
 from mogui.model.models import Project,Release
 from dss.Serializer import serializer
 import commands,os,time
-from mogui.common import function
+from mogui.common import function,config
 
 
 # 上线单列表页面
@@ -23,7 +23,11 @@ from mogui.common import function
 # @date     2017-08-16
 # @param    [request]   [请求对象]
 def index(request) :
-    return render(request, 'release/index.html')
+    context = {
+        'count' : Release.objects.count(),
+        'page' : config.page
+    }
+    return render(request, 'release/index.html', context)
 
 
 # 上线单添加页面
@@ -33,9 +37,9 @@ def index(request) :
 # @date     2017-08-16
 # @param    [request]   [请求对象]
 def saveinfo(request) :
-    data = Project.objects.all().order_by('-project_id').values('project_id', 'project_name')
+    project_list = Project.objects.all().order_by('-project_id').values('project_id', 'project_name')
     context = {
-        'project_list' : data,
+        'project_list' : project_list,
     }
     return render(request, 'release/saveinfo.html', context)
 
@@ -49,7 +53,10 @@ def saveinfo(request) :
 # @return   [json]      [josn]
 def get_release_list(request) :
     keywords = request.POST.get('keywords', '')
-    data = Release.objects.filter(title__contains=keywords).all().order_by('-release_id').values('release_id', 'project_id', 'title', 'branch', 'version', 'status', 'create_time')[0:60]
+    page = int(request.POST.get('page', 1))-1
+    page_size = int(request.POST.get('page_size', config.page['page_size']))
+    page_start = page*page_size
+    data = Release.objects.filter(title__contains=keywords).all().order_by('-release_id').values('release_id', 'project_id', 'title', 'branch', 'version', 'status', 'create_time')[page_start:page_start+page_size]
     result = []
     if data != None :
         status_list = [u'未发布', u'已发布', u'已回滚']

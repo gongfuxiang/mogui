@@ -2,8 +2,15 @@
  * 公共
  */
 * { font-size: 14px; margin: 0px; padding: 0px; border: 0px; }
+a { text-decoration: none; }
+img { border: 0px; }
 .oh { overflow: hidden; }
 .m-t-15 { margin-top: 15px; }
+.fl { float: left; }
+.fr { float: right; }
+.tl { text-align: left; }
+.tc { text-align: center; }
+.tr { text-align: right; }
 
 /**
  * 表单
@@ -25,10 +32,17 @@ header .logo-tips { color: #c6c6c6; font-size: 12px; }
 #nav-left, #content { overflow-x: hidden; }
 
 /**
- * 顶部
+ * 底部
  */
 footer { background-color: #333; padding: 25px 10px; }
 footer .title { color: #a4aebd; }
+
+/**
+ * 编辑页面面包导航
+ */
+.tabs-nav { border-bottom: 1px solid #eee; padding: 5px 10px; }
+.tabs-nav .title { font-size: 16px; font-weight: 400; }
+.tabs-nav .backup { color: #20a0ff; }
 
 /**
  * 搜索条件表单

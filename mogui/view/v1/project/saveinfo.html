@@ -1,6 +1,10 @@
 {% include "../base/header.html" %}
 
 <div id="app" v-loading="loading" element-loading-text="处理中...">
+    <div class="tabs-nav oh">
+        <span class="title fl">项目{% if data.project_id == None %}添加{% else %}编辑{% endif %}</span>
+        <a href="{{ host }}project/index" class="backup fr">返回</a>
+    </div>
     <el-form :model="rule_form" :rules="rules" ref="rule_form" label-width="100px" label-position="top">
         <el-form-item label="项目名称" prop="project_name">
             <el-input v-model="rule_form.project_name" placeholder="起一个响亮的项目名称吧"></el-input>

@@ -33,6 +33,8 @@
             </template>
         </el-table-column>
     </el-table>
+
+    <el-pagination @size-change="handle_size_change" @current-change="handle_current_change" :current-page="1" :page-sizes="{{ page.page_sizes }}" :page-size="page_size" layout="{{ page.page_layout }}" :total="{{ count }}" class="tr m-t-15"></el-pagination>
 </div>
 
 {% include "../base/footer.html" %}
@@ -44,14 +46,18 @@ new Vue({
         loading: false,
         search : {
             keywords : ''
-        }
+        },
+        page_size : {{ page.page_size }}
     },
 
     // 初始化
     created : function()
     {
         // 获取数据
-        this.get_release_list();
+        if({{ count }} > 0)
+        {
+            this.get_release_list();
+        }
     },
 
     // 函数
@@ -62,11 +68,13 @@ new Vue({
          * @blog     http://gong.gg/
          * @version  0.0.1
          * @datetime 2017-08-06T07:14:36+0800
+         * @param    {[int]}           [page]      [当前分页数]
          */
-        get_release_list : function()
+        get_release_list : function(page, page_size)
         {
+            page = page || 1;
             this.loading = true;
-            this.$http.post(__host__+'release/get_release_list', {csrfmiddlewaretoken:'{{ csrf_token }}', keywords:this.search.keywords}, {emulateJSON: true}).then((response) => 
+            this.$http.post(__host__+'release/get_release_list', {csrfmiddlewaretoken:'{{ csrf_token }}', keywords:this.search.keywords, page:page, page_size:this.page_size}, {emulateJSON: true}).then((response) => 
             {
                 if(response.data.code == 0)
                 {
@@ -202,6 +210,33 @@ new Vue({
                     this.loading = false;
                 });
             }).catch(() => {});
+        },
+
+        /**
+         * [handle_size_change 分页条数操作]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-07T19:45:28+0800
+         * @param    {[int]}           [page]      [当前分页数]
+         */
+        handle_size_change : function(page_size)
+        {
+            this.page_size = page_size;
+            this.get_release_list(1);
+        },
+
+        /**
+         * [handle_current_change 分页操作]
+         * @author   Devil
+         * @blog     http://gong.gg/
+         * @version  0.0.1
+         * @datetime 2017-08-07T19:45:28+0800
+         * @param    {[int]}           [page]      [当前分页数]
+         */
+        handle_current_change : function(page)
+        {
+            this.get_release_list(page);
         }
     }
 });

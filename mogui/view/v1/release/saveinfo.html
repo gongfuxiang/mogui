@@ -1,6 +1,10 @@
 {% include "../base/header.html" %}
 
 <div id="app" v-loading="loading" element-loading-text="加载中...">
+    <div class="tabs-nav oh">
+        <span class="title fl">上线工单添加</span>
+        <a href="{{ host }}release/index" class="backup fr">返回</a>
+    </div>
     <el-form :model="rule_form" :rules="rules" ref="rule_form" label-width="100px" label-position="top">
         <el-form-item label="标题" prop="title">
             <el-input v-model="rule_form.title" placeholder="上线单标题"></el-input>
