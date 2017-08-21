@@ -109,7 +109,10 @@ def save(request) :
 
     # 项目实际地址-目录不存在则创建
     if os.path.exists(request.POST['dir_address']) == False :
-        os.mkdir(request.POST['dir_address'])
+        try :
+            os.makedirs(request.POST['dir_address'])
+        OSError, e :
+            return function.ajax_return_exit('请检查目录或权限是否正确', -3, [], e)
 
     # 项目实际地址-克隆代码
     if os.path.exists(git_dir_address) == False :
@@ -123,7 +126,10 @@ def save(request) :
 
     # 临时操作地址-目录不存在则创建
     if os.path.exists(project_temp_dir) == False :
-        os.mkdir(project_temp_dir)
+        try :
+            os.makedirs(project_temp_dir)
+        OSError, e :
+            return function.ajax_return_exit('请检查目录或权限是否正确', -3, [], e)
 
     # 临时操作地址-克隆代码
     if os.path.exists(project_temp_dir+'/'+project_git_name) == False :
