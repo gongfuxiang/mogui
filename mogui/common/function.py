@@ -10,6 +10,7 @@
 
 from django.http import HttpResponse
 from django.conf import settings
+import commands,re
 try :
     import json # python >= 2.6
 except ImportError:
@@ -19,6 +20,31 @@ except ImportError:
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
+
+
+# git版本号大小判断
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gong.gg/
+# @date     2017-08-21
+# @param    [list]       [版本号(如: [1,3,6])]
+# @return   [boolean]    [系统版本大于参数版本True, 则False]
+def git_version_determine_size(ver_list) :
+    if len(ver_list) <= 0 :
+        return False
+    (status, output) = commands.getstatusoutput('git --version')
+    if status == 0 :
+        re_list = re.compile(r'[1-9]\d*').findall(output)
+        re_count = len(re_list)
+        print re_list
+        if re_count > 0 :
+            for index in range(len(ver_list)) :
+                if index < re_count :
+                    if int(re_list[index]) < int(ver_list[index]) :
+                        return False
+    else :
+        return False
+    return True
 
 
 # 获取项目临时操作地址

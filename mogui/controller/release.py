@@ -172,7 +172,11 @@ def get_version_list(request) :
             return function.ajax_return_exit('git拉取分支代码失败', -13, [], output)
 
         # 获取版本列表
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git log --pretty=format:"%h{|}%s{|}[%cd]{|}<%an>" --date=format:"%Y-%m-%d %H:%M:%S" -30')
+        if function.git_version_determine_size([2,4]) == True :
+            date_format = '--date=format:"%Y-%m-%d %H:%M:%S"'
+        else :
+            date_format = ''
+        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git log --pretty=format:"%h{|}%s{|}[%cd]{|}<%an>" '+date_format+' -30')
         if status == 0 :
             version_list = function.get_version_list(output)
             if len(version_list) == 0 :
