@@ -12,7 +12,6 @@ from django.shortcuts import render
 from django.views.decorators import csrf
 from mogui.model.models import Project
 from django.http import HttpResponse
-from dss.Serializer import serializer
 import time,commands,os,shutil
 from mogui.common import function,config
 
