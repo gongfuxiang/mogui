@@ -111,7 +111,7 @@ def save(request) :
     if os.path.exists(request.POST['dir_address']) == False :
         try :
             os.makedirs(request.POST['dir_address'])
-        OSError, e :
+        except OSError, e :
             return function.ajax_return_exit('请检查目录或权限是否正确', -3, [], e)
 
     # 项目实际地址-克隆代码
@@ -128,7 +128,7 @@ def save(request) :
     if os.path.exists(project_temp_dir) == False :
         try :
             os.makedirs(project_temp_dir)
-        OSError, e :
+        except OSError, e :
             return function.ajax_return_exit('请检查目录或权限是否正确', -3, [], e)
 
     # 临时操作地址-克隆代码
