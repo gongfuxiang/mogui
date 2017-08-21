@@ -105,14 +105,17 @@ def save(request) :
     if project_id == '0' :
         # 添加情况下 项目存在则删除
         if os.path.exists(git_dir_address) == True :
-            shutil.rmtree(git_dir_address)
+            try :
+                shutil.rmtree(git_dir_address)
+            except OSError, e :
+                return function.ajax_return_exit('请检查目录或权限是否正确', -3, [], str(e))
 
     # 项目实际地址-目录不存在则创建
     if os.path.exists(request.POST['dir_address']) == False :
         try :
             os.makedirs(request.POST['dir_address'])
         except OSError, e :
-            return function.ajax_return_exit('请检查目录或权限是否正确', -3, [], e)
+            return function.ajax_return_exit('请检查目录或权限是否正确', -3, [], str(e))
 
     # 项目实际地址-克隆代码
     if os.path.exists(git_dir_address) == False :
@@ -129,7 +132,7 @@ def save(request) :
         try :
             os.makedirs(project_temp_dir)
         except OSError, e :
-            return function.ajax_return_exit('请检查目录或权限是否正确', -3, [], e)
+            return function.ajax_return_exit('请检查目录或权限是否正确', -3, [], str(e))
 
     # 临时操作地址-克隆代码
     if os.path.exists(project_temp_dir+'/'+project_git_name) == False :
