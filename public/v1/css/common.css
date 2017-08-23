@@ -6,12 +6,15 @@ a { text-decoration: none; }
 img { border: 0px; }
 .oh { overflow: hidden; }
 .m-t-15 { margin-top: 15px; }
+.m-t-25 { margin-top: 25px; }
+.m-l-10 { margin-left: 10px; }
 .m-b-15 { margin-bottom: 15px; }
 .fl { float: left; }
 .fr { float: right; }
 .tl { text-align: left; }
 .tc { text-align: center; }
 .tr { text-align: right; }
+.fw-700 { font-weight: 700; }
 
 /**
  * 表单
@@ -20,6 +23,14 @@ img { border: 0px; }
 .el-form .el-select { width: 100% }
 .form-submit { margin: 22px 5px; }
 .el-form-item:hover { background-color: #fafafa; }
+
+/**
+ * 公共dl样式
+ */
+.dl-content dt { float: left; padding-left: 5px; overflow: hidden; clear: left;  
+        width: 120px; }
+.dl-content dd { border-bottom: 1px solid #efefef; padding-left: 120px; }
+.dl-content dt, .dl-content dd { font-weight: normal; text-align: left; margin-top: 0px; line-height: 36px; min-height: 36px; }
 
 /**
  * 顶部导航
@@ -62,3 +73,9 @@ footer .title { color: #a4aebd; }
  */
 .refresh-submit { float: left; margin: -28px 0 0 50px; }
 .refresh-submit span { font-size: 12px; }
+
+
+/**
+ * 欢迎页面
+ */
+.welcome-title { line-height: 30px; background-color: #eef1f6; padding-left: 5px; }

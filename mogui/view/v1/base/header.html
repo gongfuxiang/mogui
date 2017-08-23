@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>魔鬼部署系统</title>
+    <title>{{ settings.PROJECT_TITLE }}</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ config.STATIC_URL }}{{ config.TEMPLATES_DEFAULT_VERSION }}/lib/element-ui/lib/theme-default/index.css">
-    <link rel="stylesheet" href="{{ config.STATIC_URL }}{{ config.TEMPLATES_DEFAULT_VERSION }}/css/common.css">
+    <link rel="stylesheet" href="{{ settings.STATIC_URL }}{{ settings.TEMPLATES_DEFAULT_VERSION }}/lib/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" href="{{ settings.STATIC_URL }}{{ settings.TEMPLATES_DEFAULT_VERSION }}/css/common.css">
     <script>
         var __host__ = '{{ host }}';
-        var __templates_version__ = '{{ config.TEMPLATES_DEFAULT_VERSION }}';
+        var __templates_version__ = '{{ settings.TEMPLATES_DEFAULT_VERSION }}';
         var error_msg = '网络错误';
         var notify_error_title = '错误信息';
     </script>

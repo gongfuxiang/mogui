@@ -13,7 +13,7 @@ from django.conf import settings
 # 配置信息
 def config(request) :
     return {
-        'config' : settings,
+        'settings' : settings,
         'host' : get_host(request),
         'nav_left' : nav_left(request),
     }

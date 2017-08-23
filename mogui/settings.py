@@ -13,20 +13,22 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from mogui.common import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# 项目名称
+# application名称
 APPLICATION_NAME = 'mogui'
 
-# 默认模板版本
-TEMPLATES_DEFAULT_VERSION = 'v1'
+# view version
+TEMPLATES_DEFAULT_VERSION = config.view['version']
 
-# 站点信息
-PROJECT_NAME = 'Mogui'
-PROJECT_NAME_TIPS = '部署系统'
-PROJECT_VERSION = '0.0.1'
+# site
+PROJECT_NAME = config.site['name']
+PROJECT_NAME_TIPS = config.site['name_tips']
+PROJECT_TITLE = config.site['title']
+PROJECT_VERSION = config.site['version']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -90,11 +92,11 @@ WSGI_APPLICATION = APPLICATION_NAME+'.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mogui',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST':'localhost',
-        'PORT':'3306',
+        'NAME': config.db['name'],
+        'USER': config.db['user'],
+        'PASSWORD': config.db['pwd'],
+        'HOST': config.db['host'],
+        'PORT': config.db['port'],
     }
 }
 
@@ -121,9 +123,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'zh-Hans'
+LANGUAGE_CODE = config.site['language_code']
 
-TIME_ZONE = 'Asia/Shanghai'
+TIME_ZONE = config.site['time_zone']
 
 USE_I18N = True
 

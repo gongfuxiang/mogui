@@ -1,1 +1,44 @@
-{{ python_version }}
+{% include "../base/header.html" %}
+
+<div id="app">
+    <p class="fw-700 welcome-title">系统信息</p>
+    <dl class="dl-content">
+        <dt>软件信息</dt>
+        <dd>
+            {{ settings.PROJECT_NAME }} {{ settings.PROJECT_VERSION }}
+            <a href="http://gong.gg/" target="_blank" class="m-l-10"><el-button type="text">查看最新版本</el-button></a>
+            <a href="http://gong.gg/" target="_blank" class="m-l-10"><el-button type="text">查看文档</el-button></a>
+        </dd>
+
+        <dt>操作系统</dt>
+        <dd>{{ system }}</dd>
+
+        <dt>Python版本</dt>
+        <dd>{{ python_version }}</dd>
+
+        <dt>Django版本</dt>
+        <dd>{{ django_version.0 }}.{{ django_version.1 }}.{{ django_version.2 }}</dd>
+
+        <dt>MySQL版本</dt>
+        <dd>{{ mysql_version }}</dd>
+
+        <dt>当前域名</dt>
+        <dd>{{ host }}</dd>
+    </dl>
+
+    <p class="fw-700 welcome-title m-t-25">开发团队</p>
+    <dl class="dl-content">
+        <dt>版权所有</dt>
+        <dd>{{ settings.PROJECT_NAME }}</dd>
+
+        <dt>发起人</dt>
+        <dd>魔鬼</dd>
+
+        <dt>研发成员</dt>
+        <dd>
+            <a href="http://gong.gg/" target="_blank">魔鬼</a>
+        </dd>
+    </dl>
+</div>
+
+{% include "../base/footer.html" %}

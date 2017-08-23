@@ -1,0 +1,4 @@
+# robots.txt for Mogui
+
+User-agent: * 
+Disallow: /
