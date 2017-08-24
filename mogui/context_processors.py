@@ -39,6 +39,7 @@ def nav_left(request) :
                 {
                     'name' : '项目列表',
                     'url' : host+'project/index',
+                    'icon' : 'menu',
                     'is_show' : True,
                     'index' : '1-1',
                 }
@@ -53,6 +54,7 @@ def nav_left(request) :
                 {
                     'name' : '上线列表',
                     'url' : host+'release/index',
+                    'icon' : 'upload',
                     'is_show' : True,
                     'index' : '2-1',
                 }

@@ -1,13 +1,14 @@
-<div id="nav-left" v-bind:style="content_style">
-    <el-menu mode="vertical">
+<div id="nav-left">
+    <el-menu mode="vertical" v-bind:style="content_style">
         {% for item in nav_left %}
             <el-menu-item-group title="{{ item.name }}">
                 {% for items in item.items %}
                     <el-menu-item index="{{ items.index }}" @click="nav_left_event('{{ items.url }}', $event)">
-                        <i class="el-icon-message"></i>{{ items.name }}
+                        <i class="el-icon-{{ items.icon }}"></i>{{ items.name }}
                     </el-menu-item>
                 {% endfor %}
             </el-menu-item-group>
         {% endfor %}
     </el-menu>
+    {% include "../base/nav_footer.html" %}
 </div>

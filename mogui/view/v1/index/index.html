@@ -4,7 +4,6 @@
     {% include "../base/nav_left.html" %}
     <iframe v-bind:src="iframe_url" frameborder="0" id="content" v-bind:style="content_style"></iframe>
 </div>
-{% include "../base/nav_footer.html" %}
 {% include "../base/footer.html" %}
 
 <script type="text/javascript">
@@ -76,11 +75,11 @@ var content = new Vue({
             // iframe宽高样式初始化
             this.content_style = {
                 width : (window.innerWidth-180)+'px',
-                height : (window.innerHeight-145)+'px'
+                height : (window.innerHeight-60)+'px'
             }
 
             // 更新左侧菜单高度
-            nav_left.content_style = {height : (window.innerHeight-130)+'px'};
+            nav_left.content_style = {height : (window.innerHeight-80)+'px'};
         }
     }
 });

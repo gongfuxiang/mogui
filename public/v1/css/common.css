@@ -46,8 +46,8 @@ header .logo-tips { color: #c6c6c6; font-size: 12px; }
 /**
  * 底部
  */
-footer { background-color: #333; padding: 25px 10px; }
-footer .title { color: #a4aebd; }
+footer { width: 140px; background-color: #333; padding: 10px 10px; position: fixed; left: 0; bottom: 0; }
+footer * { color: #a4aebd; }
 
 /**
  * 编辑页面面包导航
