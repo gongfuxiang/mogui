@@ -34,5 +34,8 @@ db = {
 }
 ```
 
+#### 流程图
+![](http://on-img.com/chart_image/599fb1f1e4b0d17449e0d7dd.png "流程图")
+
 #### 控制台UI
 ![](http://gong.gg/content/uploadfile/201708/38f41503625869.gif "效果图")
