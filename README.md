@@ -33,3 +33,6 @@ db = {
     'port' : 3306           # 端口号
 }
 ```
+
+#### 控制台UI
+![](http://gong.gg/content/uploadfile/201708/38f41503625869.gif "效果图")
