@@ -39,11 +39,10 @@ SECRET_KEY = 'vs%mc+jg)#g1exa9*f*6$2b7o=o$0wc*_m2z236=ff=_$ve!47'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# 实际域名或ip可继续添加
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

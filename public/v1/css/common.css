@@ -36,7 +36,7 @@ img { border: 0px; }
  * 顶部导航
  */
 header { background-color: #324157; height: 45px; }
-header .logo { color: #fff; font-size: 32px; font-family: serif; margin: 0px 5px 0px 10px; display: inline-block; }
+header .logo { color: #fff; font-size: 30px; font-family: serif; margin: 0px 5px 0px 10px; display: inline-block; }
 header .logo-tips { color: #c6c6c6; font-size: 12px; }
 #nav-left { float: left; width: 160px; background-color: #eef1f6; }
 #nav-left ul { border-radius: 0px; }
