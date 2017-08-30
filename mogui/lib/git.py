@@ -62,12 +62,12 @@ def clean(dir_address) :
 # @blog     http://gong.gg/
 # @date     2017-08-04
 # @param    [string]                 [目录地址]
-# @param    [string]                 [分支名称]
+# @param    [string]                 [分支名称（空则同步所有分支）]
 # @return   [dictionary|boolean]     [成功 True, 失败 字典]
-def fetch(dir_address, branch_name) :
+def fetch(dir_address, branch_name='') :
     (status, output) = commands.getstatusoutput('cd '+dir_address+';git fetch origin '+branch_name)
     if status != 0 :
-        return function.business_return('拉取远程分支失败', -703, [], output)
+        return function.business_return('同步远程分支失败', -703, [], output)
     return True
 
 

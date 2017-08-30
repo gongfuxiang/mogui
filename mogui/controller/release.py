@@ -116,6 +116,11 @@ def get_branch_list(request) :
         if os.path.exists(git_dir_address) == False:
             return function.ajax_return_exit('项目路径地址不存在', -2)
 
+        # 同步远程分支
+        ret = git.fetch(git_dir_address)
+        if ret != True :
+            return function.json_exit(ret)
+
         # 获取版本列表
         return function.json_exit(git.get_branch(git_dir_address, '-a'))
     else :
