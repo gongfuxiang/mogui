@@ -10,7 +10,7 @@
 
 from django.http import HttpResponse
 from django.conf import settings
-import commands,re
+import commands,re,os
 try :
     import json # python >= 2.6
 except ImportError:
@@ -78,9 +78,13 @@ def get_git_ssh_name(url) :
 # @date     2017-08-04
 # @param    [string]     [git目录地址]
 # @return   [string]     [git目录+项目名称地址]
-def get_git_address(dir_name, url) :
+# @param    [string]     [git别名（可选）]
+def get_git_address(dir_name, url='', git_alias='') :
     # git项目名称
-    git_name = get_git_ssh_name(url)
+    if len(git_alias) == 0 :
+        git_name = get_git_ssh_name(url)
+    else :
+        git_name = git_alias
 
     # git项目地址处理
     if dir_name[-1] == '/' :
@@ -165,4 +169,76 @@ def not_empty(string) :
 # @param    [string]   [提示信息]
 # @return   [json]     [json数据]
 def ajax_return_exit(msg, code=0, data=[], tips='') :
-    return HttpResponse(json.dumps({"code":code, "msg":msg, "data":data, "tips":tips}))
+    return json_exit({'code':code, 'msg':msg, 'data':data, 'tips':tips})
+
+
+# 输出json并退出
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gong.gg/
+# @date     2017-08-04
+# @param    [dic]      [输出数据]
+# @return   [json]     [json数据]
+def json_exit(data) :
+    return HttpResponse(json.dumps(data))
+
+
+# 业务数据返回方法
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gong.gg/
+# @date     2017-08-04
+# @param    [string]   [错误信息]
+# @param    [int]      [错误码]
+# @param    [list]     [返回数据]
+# @param    [string]   [提示信息]
+# @return   [json]     [json数据]
+def business_return(msg, code=0, data=[], tips='') :
+    return {'code':code, 'msg':msg, 'data':data, 'tips':tips}
+
+
+# 目录创建（支持多级目录）
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gong.gg/
+# @date     2017-08-04
+# @param    [string]                 [目录地址]
+# @return   [dictionary|boolean]     [成功 True, 失败 字典]
+def mg_mkdir(dir_address) :
+    if os.path.exists(dir_address) == False :
+        try :
+            os.makedirs(dir_address)
+        except OSError, e :
+            return business_return('请检查目录或权限是否正确', -3, [], str(e))
+    return True
+
+
+# 目录删除（支持多级目录）
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gong.gg/
+# @date     2017-08-04
+# @param    [string]                 [目录地址]
+# @return   [dictionary|boolean]     [成功 True, 失败 字典]
+def mg_dirrm(dir_address) :
+    if os.path.exists(dir_address) == True :
+        try :
+            shutil.rmtree(dir_address)
+        except OSError, e :
+            return business_return('请检查目录或权限是否正确', -4, [], str(e))
+    return True
+
+
+# 目录重命名
+# @author   Devil
+# @version  0.0.1
+# @blog     http://gong.gg/
+# @date     2017-08-04
+# @param    [string]                 [原目录地址]
+# @param    [string]                 [新目录地址]
+# @return   [dictionary|boolean]     [成功 True, 失败 字典]
+def mg_mv(dir_address, new_dir_address) :
+    (status, output) = commands.getstatusoutput('mv '+dir_address+' '+new_dir_address)
+    if status != 0 :
+        return business_return('目录重命名失败', -11, [], output)
+    return True

@@ -11,8 +11,9 @@
 from django.shortcuts import render
 from django.views.decorators import csrf
 from mogui.model.models import Project,Release
-import commands,os,time
+import os,time
 from mogui.common import function,config
+from mogui.lib import git
 
 
 # 上线单列表页面
@@ -102,25 +103,21 @@ def get_release_list(request) :
 # @return   [json]      [josn]
 def get_branch_list(request) :
     # 项目id
-    project_id = request.POST.get('project_id', '0')
-    if project_id == '0' :
+    project_id = request.POST.get('project_id', '')
+    if len(project_id) == 0 :
         return function.ajax_return_exit('项目id不能为空', -1)
 
     # 获取项目数据
     data = Project.objects.filter(project_id=project_id).first()
     if data != None :
         # 获取项目名称
-        git_dir_address = function.get_git_address(function.get_project_handle_temp_dir(), data.git_ssh_address)
+        git_dir_address = function.get_git_address(function.get_project_handle_temp_dir(), data.git_ssh_address, data.git_alias)
 
         if os.path.exists(git_dir_address) == False:
             return function.ajax_return_exit('项目路径地址不存在', -2)
 
         # 获取版本列表
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git branch -a')
-        if status == 0 :
-            return function.ajax_return_exit('操作成功', 0, function.get_branch_list(output))
-        else :
-            return function.ajax_return_exit('git执行失败', -4, [], output)
+        return function.json_exit(git.get_branch(git_dir_address, '-a'))
     else :
         return function.ajax_return_exit('没有找到相关的项目', -3)
 
@@ -134,57 +131,45 @@ def get_branch_list(request) :
 # @return   [json]      [josn]
 def get_version_list(request) :
     # 项目id
-    project_id = request.POST.get('project_id', '0')
-    if project_id == '0' :
+    project_id = request.POST.get('project_id', '')
+    if len(project_id) == 0 :
         return function.ajax_return_exit('项目id不能为空', -1)
 
-    # 分支
+    # 分支名称
     branch = request.POST.get('branch')
-    if len(branch) == '0' :
+    if len(branch) == 0 :
         return function.ajax_return_exit('请选择项目分支', -2)
 
     # 获取项目数据
     data = Project.objects.filter(project_id=project_id).first()
     if data != None :
         # 获取项目名称
-        git_dir_address = function.get_git_address(function.get_project_handle_temp_dir(), data.git_ssh_address)
+        git_dir_address = function.get_git_address(function.get_project_handle_temp_dir(), data.git_ssh_address, data.git_alias)
         if os.path.exists(git_dir_address) == False:
                 return function.ajax_return_exit('项目路径地址不存在', -1)
 
         # 清除当前项目改动项
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git checkout .;git clean -fd')
-        if status != 0 :
-            return function.ajax_return_exit('git清除本地改动项失败', -10, [], output)
+        ret = git.clean(git_dir_address)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 拉取远程分支最新代码
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git fetch origin '+branch)
-        if status != 0 :
-            return function.ajax_return_exit('git拉取远程分支失败', -11, [], output)
+        ret = git.fetch(git_dir_address, branch)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 分支切换
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git checkout '+branch)
-        if status != 0 :
-            return function.ajax_return_exit('git分支切换失败', -12, [], output)
+        ret = git.checkout(git_dir_address, branch)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 拉取分支最新代码到本地分支
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git pull origin '+branch)
-        if status != 0 :
-            return function.ajax_return_exit('git拉取分支代码失败', -13, [], output)
+        ret = git.pull(git_dir_address, branch)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 获取版本列表
-        if function.git_version_determine_size([2,4]) == True :
-            date_format = '--date=format:"%Y-%m-%d %H:%M:%S"'
-        else :
-            date_format = ''
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git log --pretty=format:"%h{|}%s{|}[%cd]{|}<%an>" '+date_format+' -30')
-        if status == 0 :
-            version_list = function.get_version_list(output)
-            if len(version_list) == 0 :
-                return function.ajax_return_exit('没有版本列表', -100)
-            else :
-                return function.ajax_return_exit('操作成功', 0, version_list)
-        else :
-            return function.ajax_return_exit('git执行失败', -4, [], output)
+        return function.json_exit(git.log(git_dir_address, 30))
     else :
         return function.ajax_return_exit('没有找到相关的项目', -3)
 
@@ -253,47 +238,47 @@ def handle_release(request) :
         return function.ajax_return_exit('没有找到相关的上线工单', -4)
 
     # 获取项目名称
-    git_dir_address = function.get_git_address(project.dir_address, project.git_ssh_address)
+    git_dir_address = function.get_git_address(project.dir_address, project.git_ssh_address, project.git_alias)
     if os.path.exists(git_dir_address) == False:
         return function.ajax_return_exit('项目路径地址不存在', -5)
 
     # 清除当前项目改动项
-    (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git checkout .;git clean -fd')
-    if status != 0 :
-        return function.ajax_return_exit('git清除本地改动项失败', -10, [], output)
+    ret = git.clean(git_dir_address)
+    if ret != True :
+        return function.json_exit(ret)
     
     # 上线操作
     if handle_type == 1 :
         # 备份当前代码
         backup_name = 'backup_'+time.strftime('%Y%m%d%H%M%S', time.localtime())
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git branch '+backup_name)
-        if status != 0 :
-            return function.ajax_return_exit('git创建备份失败', -11, [], output)
+        ret = git.branch(git_dir_address, backup_name)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 备份分支推送到远程仓库
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git push origin '+backup_name)
-        if status != 0 :
-            return function.ajax_return_exit('git备份到远程仓库失败', -12, [], output)
+        ret = git.push(git_dir_address, backup_name)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 拉取远程分支最新代码
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git fetch origin '+release.branch)
-        if status != 0 :
-            return function.ajax_return_exit('git拉取远程分支失败', -13, [], output)
+        ret = git.fetch(git_dir_address, release.branch)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 分支切换
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git checkout '+release.branch)
-        if status != 0 :
-            return function.ajax_return_exit('git分支切换失败', -14, [], output)
+        ret = git.checkout(git_dir_address, release.branch)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 拉取分支最新代码到本地分支
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git pull origin '+release.branch)
-        if status != 0 :
-            return function.ajax_return_exit('git拉取分支代码失败', -15, [], output)
+        ret = git.pull(git_dir_address, release.branch)
+        if ret != True :
+            return function.json_exit(ret)
 
         # git更新到工单指定分支与版本
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git reset --hard '+release.version)
-        if status != 0 :
-            return function.ajax_return_exit('上线失败', -100, [], output)
+        ret = git.reset(git_dir_address, release.version)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 更新工单数据
         Release.objects.filter(release_id=release_id).update(
@@ -305,19 +290,19 @@ def handle_release(request) :
     # 回滚操作
     elif handle_type == 2 :
         # 拉取远程分支最新代码
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git fetch origin '+release.backup_name)
-        if status != 0 :
-            return function.ajax_return_exit('git远程备份分支拉取失败', -13, [], output)
+        ret = git.fetch(git_dir_address, release.backup_name)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 分支切换
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git checkout '+release.backup_name)
-        if status != 0 :
-            return function.ajax_return_exit('git分支切换失败', -14, [], output)
+        ret = git.checkout(git_dir_address, release.backup_name)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 拉取分支最新代码到本地分支
-        (status, output) = commands.getstatusoutput('cd '+git_dir_address+';git pull origin '+release.backup_name)
-        if status != 0 :
-            return function.ajax_return_exit('回滚失败', -100, [], output)
+        ret = git.pull(git_dir_address, release.backup_name)
+        if ret != True :
+            return function.json_exit(ret)
 
         # 更新工单数据
         Release.objects.filter(release_id=release_id).update(status=2)
@@ -326,6 +311,3 @@ def handle_release(request) :
     # 操作类型有误
     else :
         return function.ajax_return_exit('上线工单类型错误', -99)
-        
-    # 默认失败返回
-    return function.ajax_return_exit('操作失败', -1000)

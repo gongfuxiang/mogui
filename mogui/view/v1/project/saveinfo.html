@@ -10,10 +10,13 @@
             <el-input v-model="rule_form.project_name" placeholder="起一个响亮的项目名称吧"></el-input>
         </el-form-item>
         <el-form-item label="项目git ssh地址" prop="git_ssh_address">
-            <el-input v-model="rule_form.git_ssh_address" placeholder="如：git@github.com:gongfuxiang/mogui.git"></el-input>
+            <el-input v-model="rule_form.git_ssh_address" placeholder="如：git@github.com:gongfuxiang/mogui.git" :disabled="is_disabled"></el-input>
         </el-form-item>
         <el-form-item label="项目路径地址" prop="dir_address">
-            <el-input v-model="rule_form.dir_address" placeholder="如：/data/www/mogui"></el-input>
+            <el-input v-model="rule_form.dir_address" placeholder="如：/data/www/mogui" :disabled="is_disabled"></el-input>
+        </el-form-item>
+        <el-form-item label="git别名" prop="git_alias">
+            <el-input v-model="rule_form.git_alias" placeholder="如：mymogui（默认git项目名称）" :disabled="is_disabled"></el-input>
         </el-form-item>
         <el-form-item label="是否集群模式">
             <el-switch
@@ -44,11 +47,13 @@ new Vue({
     data : {
         loading: false,
         loading_submit: false,
+        is_disabled: ('{{ data }}' == 'None') ? false : true,
         rule_form: {
             csrfmiddlewaretoken: '{{ csrf_token }}' ,
             project_id : '{{ project_id }}',
             project_name: '{{ data.project_name }}',
             git_ssh_address: '{{ data.git_ssh_address }}',
+            git_alias: '{{ data.git_alias }}',
             dir_address: '{{ data.dir_address }}',
             is_cluster: 0,
             describe: '{{ data.describe }}'
@@ -61,6 +66,10 @@ new Vue({
             git_ssh_address: [
                 { required: true, message: '请输入项目git ssh地址', trigger: 'blur' },
                 { min: 3, max: 255, message: '长度在 3 到 255 个字符', trigger: 'blur' }
+            ],
+            git_alias: [
+                { required: false, message: 'git别名', trigger: 'blur' },
+                { min: 0, max: 60, message: '长度在 0 到 60 个字符', trigger: 'blur' }
             ],
             dir_address: [
                 { required: true, message: '请输入项目路径地址', trigger: 'blur' },
