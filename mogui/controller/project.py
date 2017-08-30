@@ -11,7 +11,7 @@
 from django.shortcuts import render
 from django.views.decorators import csrf
 from mogui.model.models import Project
-import time,os,shutil
+import time,os
 from mogui.common import function,config
 from mogui.lib import git
 

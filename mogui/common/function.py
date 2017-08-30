@@ -10,7 +10,7 @@
 
 from django.http import HttpResponse
 from django.conf import settings
-import commands,re,os
+import commands,re,os,shutil
 try :
     import json # python >= 2.6
 except ImportError:
