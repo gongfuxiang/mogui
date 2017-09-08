@@ -265,8 +265,8 @@ def handle_release(request) :
         if ret != True :
             return function.json_exit(ret)
 
-        # 拉取远程分支最新代码
-        ret = git.fetch(git_dir_address, release.branch)
+        # 同步远程分支
+        ret = git.fetch(git_dir_address)
         if ret != True :
             return function.json_exit(ret)
 
