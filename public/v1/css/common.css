@@ -40,7 +40,7 @@ header .logo { color: #fff; font-size: 30px; font-family: serif; margin: 0px 5px
 header .logo-tips { color: #c6c6c6; font-size: 12px; }
 #nav-left { float: left; width: 160px; background-color: #eef1f6; }
 #nav-left ul { border-radius: 0px; }
-#content { padding: 10px 10px 0 10px; }
+#content { padding: 10px 0 0 10px; }
 #nav-left, #content { overflow-x: hidden; }
 
 /**
