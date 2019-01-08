@@ -5,6 +5,10 @@
 > * 目前仅支持git项目部署、在上线过程中会放弃git当前所有的修改和创建，` 需要注意您的项目中不会存在运营过程中创建的数据，以免给您造成损失` 。
 > * 环境搭建可参考博客中的文章 <a href="http://gong.gg/post-120.html" target="_blank">http://gong.gg/post-120.html</a>
 
+### 源代码平台
+* Github：https://github.com/gongfuxiang/mogui
+* 码云/开源中国：https://gitee.com/gongfuxiang/mogui
+
 #### 项目结构
 ```
 mogui
