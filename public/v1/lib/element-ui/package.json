@@ -125,5 +125,5 @@
     "webpack-node-externals": "^1.5.4"
   },
   "_from": "element-ui@1.4.2",
-  "_resolved": "http://registry.npm.taobao.org/element-ui/download/element-ui-1.4.2.tgz"
+  "_resolved": "https://registry.npmmirror.com/element-ui/download/element-ui-1.4.2.tgz"
 }
